@@ -7,7 +7,7 @@
 
 ## Current Focus
 
-- **Live AI brain loop** — classify → MEMORY/ → `brain-sync.sh` → GitHub
+- **Live AI brain loop** — `brain-watch.sh` → `brain-agent.sh` → `brain-classify.sh` → GitHub
 - Git-backed vault synced to https://github.com/arshadmotlani-cpu/awesomepg-docs
 - Stabilize vacating / checkout ops post-`d4c01c6` deploy
 - Consolidate admin actions into [[Operations]] + module hubs
@@ -63,3 +63,12 @@ See [[tasks]] for full task log. Current:
 [[START_HERE]] · [[CURRENT_STATE]] · [[tasks]] · [[decisions]] · [[AI_CONTEXT]]
 
 *Last updated: 2026-06-22*
+
+<!-- AGENT_STATUS_START -->
+## Agent status
+
+> **Last run:** 2026-06-21T19:41:12Z  
+> **Classification:** active  
+> **Files touched:** 7
+
+<!-- AGENT_STATUS_END -->

@@ -70,14 +70,16 @@ After any file edit, **if change is meaningful**:
 
 ## 6. Git sync rule
 
-After memory update:
+After memory update, the **Memory Agent** handles Git (do not manual commit unless asked):
 
 ```bash
 cd /Users/aashumotlani/awesomepg/docs
-./scripts/brain-sync.sh
+./scripts/brain-agent.sh    # classify + commit + push
+# or live loop:
+./scripts/brain-watch.sh
 ```
 
-This stages changes, commits with `brain: auto memory sync`, and pushes if `origin` exists. Skips commit when nothing changed.
+`brain-sync.sh` delegates to `brain-agent.sh`.
 
 ---
 
@@ -96,8 +98,9 @@ Do **NOT**:
 
 | Mode | Command |
 |------|---------|
-| Manual (recommended after edits) | `./scripts/brain-sync.sh` |
-| Background watcher | `./scripts/brain-watch.sh` (requires `fswatch`) |
+| One-shot agent | `./scripts/brain-agent.sh` |
+| Manual alias | `./scripts/brain-sync.sh` → agent |
+| Background watcher | `./scripts/brain-watch.sh` (fswatch → agent) |
 
 ---
 

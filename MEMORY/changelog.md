@@ -36,3 +36,15 @@ When `brain-sync.sh` or Cursor agent completes a memory update, append:
 ## Related
 
 [[CHANGELOG]] · [[active_memory]] · [[decisions]] · [[tasks]] · [[START_HERE]]
+
+<!-- AGENT_2026-06-21T19:41:12Z -->
+## 2026-06-21 (agent · 2026-06-21T19:41:12Z)
+
+- **Type:** active
+- **Files:**
+- `.cursor/rules.md`
+- `MEMORY/active_memory.md`
+
+
+<!-- AGENT_LOG_2026-06-21T19:41:12Z -->
+- **2026-06-21T19:41:12Z** — agent classified `active` (7 file(s))
