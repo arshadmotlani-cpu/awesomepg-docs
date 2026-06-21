@@ -30,8 +30,9 @@ if [[ -x "$CLASSIFY" ]]; then
   "$CLASSIFY" || true
 fi
 
-# 3. Stage all changes (including classifier appends)
-git add .
+# 3. Stage all changes (including classifier appends; never stage lock files)
+git add -A
+git reset -q HEAD -- .brain.lock .auto-sync.lock 2>/dev/null || true
 
 if git diff --cached --quiet; then
   echo "No staged changes after classification."
