@@ -16,9 +16,15 @@ if ! git diff --quiet 2>/dev/null; then HAS_CHANGE=true; fi
 if ! git diff --cached --quiet 2>/dev/null; then HAS_CHANGE=true; fi
 
 CHANGED=()
-while IFS= read -r line; do
-  [[ -n "$line" ]] && CHANGED+=("$line")
-done < <(git status --porcelain 2>/dev/null | awk '{print $2}' || true)
+if ! git diff --cached --quiet 2>/dev/null; then
+  while IFS= read -r line; do
+    [[ -n "$line" ]] && CHANGED+=("$line")
+  done < <(git diff --cached --name-only 2>/dev/null || true)
+else
+  while IFS= read -r line; do
+    [[ -n "$line" ]] && CHANGED+=("$line")
+  done < <(git status --porcelain 2>/dev/null | awk '{print $2}' || true)
+fi
 
 if [[ ${#CHANGED[@]} -eq 0 ]] && [[ "$HAS_CHANGE" == "false" ]]; then
   echo "[intelligence] No changes detected."
@@ -29,7 +35,7 @@ fi
 FILTERED=()
 for f in "${CHANGED[@]}"; do
   case "$f" in
-    .brain.lock|.auto-sync.lock|.brain-last-classify) continue ;;
+    .brain.lock|.auto-sync.lock|.brain-last-classify|.brain-last-semantic|.brain-momentum) continue ;;
     scripts/brain-*) continue ;;
   esac
   FILTERED+=("$f")
@@ -173,12 +179,14 @@ for t in BUG FEATURE DECISION TASK INSIGHT REFACTOR; do
   append_entry "$target" "$MARKER" "${ENTRY_BODY}"
 done
 
-# ── STEP 4: Changelog (mandatory structured entry) ───────────────────────────
-CHANGELOG="MEMORY/changelog.md"
-CL_MARKER="<!-- INTEL_LOG_${TS_FULL} -->"
-CL_BODY="- **${TS_FULL}** | **${PRIMARY}** | ${EXPLAIN}
+# ── STEP 4: Changelog (skip if semantic layer already wrote entry) ───────────
+if [[ "${BRAIN_SEMANTIC_RAN:-0}" != "1" ]]; then
+  CHANGELOG="MEMORY/changelog.md"
+  CL_MARKER="<!-- INTEL_LOG_${TS_FULL} -->"
+  CL_BODY="- **${TS_FULL}** | **${PRIMARY}** | ${EXPLAIN}
   - Files: $(echo "${FILTERED[*]}" | tr ' ' ', ')"
-append_entry "$CHANGELOG" "$CL_MARKER" "$CL_BODY"
+  append_entry "$CHANGELOG" "$CL_MARKER" "$CL_BODY"
+fi
 
 # ── STEP 5: active_memory — ONLY on focus/blocker/priority signals ───────────
 SHOULD_UPDATE_ACTIVE=false

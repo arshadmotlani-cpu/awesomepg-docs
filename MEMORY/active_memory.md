@@ -7,7 +7,7 @@
 
 ## Current Focus
 
-- **IDE Activity Intelligence Layer** — `brain-classify.sh` → MEMORY + changelog + git journal
+- **Semantic Intelligence Layer** — `brain-semantic.sh` → intent + impact + `Semantic State`
 - Git-backed vault synced to https://github.com/arshadmotlani-cpu/awesomepg-docs
 - Stabilize vacating / checkout ops post-`d4c01c6` deploy
 - Consolidate admin actions into [[Operations]] + module hubs
@@ -67,20 +67,22 @@ See [[tasks]] for full task log. Current:
 <!-- AGENT_STATUS_START -->
 ## Agent status
 
-> **Last run:** 2026-06-21T19:59:45Z  
+> **Last run:** 2026-06-21T20:03:44Z  
 > **Primary type:** BUG  
-> **All types:**  · REFACTOR ·  · BUG ·  · DECISION ·  · INSIGHT ·  · TASK ·  · FEATURE ·   
-> **Files:** 9
+> **All types:**  · REFACTOR ·  · BUG ·  · TASK ·  · DECISION ·  · INSIGHT ·  · FEATURE ·   
+> **Files:** 3
 
 <!-- AGENT_STATUS_END -->
 
 
+
 <!-- INTELLIGENCE_DELTAS_START -->
-### 2026-06-21T19:59:45Z — review recommended
+### 2026-06-21T20:03:44Z — review recommended
 
 - **Signal:** BUG change in project state files
 - **Action:** Verify Current Focus / Blockers / Priorities still accurate
-- **Trigger files:** .gitignore,INTELLIGENCE.md,MEMORY/active_memory.md,MEMORY/bugs.md,MEMORY/changelog.md,MEMORY/decisions.md,MEMORY/ideas.md,MEMORY/insights.md,MEMORY/tasks.md
+- **Trigger files:** .gitignore,INTELLIGENCE.md,MEMORY/active_memory.md
 
 <!-- INTELLIGENCE_DELTAS_END -->
+
 

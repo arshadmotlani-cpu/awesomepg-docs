@@ -56,3 +56,7 @@ When `brain-sync.sh` or Cursor agent completes a memory update, append:
 <!-- INTEL_LOG_2026-06-21T19:59:45Z -->
 - **2026-06-21T19:59:45Z** | **BUG** | 11 files changed, 368 insertions(+), 104 deletions(-)
   - Files: .gitignore,INTELLIGENCE.md,MEMORY/active_memory.md,MEMORY/bugs.md,MEMORY/changelog.md,MEMORY/decisions.md,MEMORY/ideas.md,MEMORY/insights.md,MEMORY/tasks.md
+
+<!-- INTEL_LOG_2026-06-21T20:03:44Z -->
+- **2026-06-21T20:03:44Z** | **BUG** | 6 files changed, 360 insertions(+), 59 deletions(-)
+  - Files: .gitignore,INTELLIGENCE.md,MEMORY/active_memory.md

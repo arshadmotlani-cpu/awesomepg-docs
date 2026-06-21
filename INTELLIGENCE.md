@@ -1,11 +1,11 @@
 # IDE Activity Intelligence Layer
 
 > **Vault-only:** `/Users/aashumotlani/awesomepg/docs`  
-> Development journal engine — filesystem changes → MEMORY → Git → GitHub
+> Meaning-aware development journal — what changed, why, and what it means.
 
 ---
 
-## Pipeline
+## Pipeline (v2 — semantic)
 
 ```
 File change (docs/ only)
@@ -14,65 +14,80 @@ brain-watch.sh (fswatch)
         ↓
 brain-agent.sh
         ↓
-brain-classify.sh (intelligence engine)
+git add (stage)
         ↓
-MEMORY/ append + changelog + conditional active_memory
+brain-semantic.sh  ← intent, impact, reason
         ↓
-git commit (brain: <type> update) + push
+brain-classify.sh  ← type → MEMORY/ files
+        ↓
+git add + commit (semantic message) + push
 ```
 
 ---
 
-## Classification types
+## Semantic layer (`brain-semantic.sh`)
 
-| Type | MEMORY target | Commit example |
-|------|---------------|----------------|
-| TASK | `MEMORY/tasks.md` | `brain: task update` |
-| FEATURE | `MEMORY/ideas.md` | `brain: feature update` |
-| BUG | `MEMORY/bugs.md` | `brain: bug fix` |
-| REFACTOR | `MEMORY/insights.md` | `brain: refactor update` |
-| DECISION | `MEMORY/decisions.md` | `brain: decision update` |
-| INSIGHT | `MEMORY/insights.md` | `brain: insight update` |
+Analyzes **`git diff --cached`** and infers:
 
-Every run appends a structured entry to **`MEMORY/changelog.md`**.
+| Field | Values |
+|-------|--------|
+| **Type** | BUG / FEATURE / REFACTOR / DECISION / TASK / MIXED / UNKNOWN |
+| **Impact** | LOW / MEDIUM / HIGH |
+| **Reason** | Human-readable intent explanation |
+
+Appends structured block to **`MEMORY/changelog.md`**:
+
+```
+---
+Time: <timestamp>
+Type: <TYPE>
+Impact: <IMPACT>
+Reason: <semantic explanation>
+Files:
+<list>
+---
+```
+
+Updates **`active_memory.md` → Semantic State** (intent, dominant type, momentum, risk).
 
 ---
 
-## active_memory updates
+## Classification layer (`brain-classify.sh`)
 
-**Current Focus / Blockers / Priorities** are NOT auto-rewritten.
+Maps types → append-only MEMORY files. Skips duplicate changelog when semantic already ran.
 
-The agent only adds a **review delta** when these files change:
+---
 
-- `SYSTEM/CURRENT_STATE.md`
-- `PROJECT/roadmap.md`
-- `START_HERE.md`
-- `BUGS.md`
-- `MEMORY/active_memory.md` (user edit)
+## Commit messages (semantic)
+
+| Signal | Message |
+|--------|---------|
+| Feature | `brain: feature expansion` |
+| Bug (high) | `brain: bug fix (high impact)` |
+| Bug | `brain: bug fix` |
+| Refactor | `brain: refactor improvement` |
+| Decision | `brain: decision update` |
+| Mixed | `brain: mixed semantic update` |
 
 ---
 
 ## Commands
 
 ```bash
-# Live development journal (background)
-./scripts/brain-watch.sh
-
-# One-shot after edits
-./scripts/brain-agent.sh
+./scripts/brain-watch.sh   # live loop
+./scripts/brain-agent.sh   # one-shot
 ```
 
 ---
 
 ## Hard limits
 
-- Tracks **filesystem changes in /docs only**
-- Does NOT track Cursor UI, keystrokes, or OS activity
-- Heuristic classification (not LLM semantic parsing)
-- Append-only — never deletes MEMORY history
+- Filesystem changes in `/docs` only — no UI/OS tracking
+- Heuristic semantics — not LLM embedding
+- Append-only MEMORY — never delete history
 
 ---
 
 ## Related
 
-[[active_memory]] · [[changelog]] · [[START_HERE]] · `.cursor/rules.md`
+[[active_memory]] · [[changelog]] · [[START_HERE]] · `docs/.cursor/rules.md`
