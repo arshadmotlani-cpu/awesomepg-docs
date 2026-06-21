@@ -97,6 +97,27 @@ START_HERE ── MEMORY/active_memory ── SYSTEM/AI_CONTEXT
 
 ---
 
+## Live brain sync (MEMORY engine)
+
+| Script | Role |
+|--------|------|
+| `.cursor/rules.md` | Cursor memory engine rules (classify → MEMORY → git) |
+| `scripts/brain-sync.sh` | Commit `brain: auto memory sync` + push |
+| `scripts/brain-watch.sh` | fswatch → brain-sync on every change |
+| `scripts/auto-sync.sh` | Alias-style sync (same safe behavior) |
+
+```bash
+# After editing MEMORY/ or any vault file
+./scripts/brain-sync.sh
+
+# True live loop (background)
+./scripts/brain-watch.sh
+```
+
+**GitHub:** https://github.com/arshadmotlani-cpu/awesomepg-docs
+
+---
+
 ## Vault Git (standalone knowledge repo)
 
 This folder is its own Git repository for syncing the AI brain independently of the app codebase.
@@ -104,25 +125,7 @@ This folder is its own Git repository for syncing the AI brain independently of 
 | Path | Role |
 |------|------|
 | `/Users/aashumotlani/awesomepg/docs` | Vault root — open this in Obsidian |
-| `scripts/auto-sync.sh` | Commit + push when files change (skips if nothing changed) |
-| `scripts/watch-auto-sync.sh` | Background watcher (requires `fswatch`) |
-
-```bash
-# One-shot sync
-./scripts/auto-sync.sh
-
-# Enable background auto-sync (install fswatch first: brew install fswatch)
-./scripts/watch-auto-sync.sh
-```
-
-Add GitHub remote once:
-
-```bash
-git remote add origin <your-docs-repo-url>
-git push -u origin main
-```
-
-`.obsidian/` is gitignored (local Obsidian settings stay on your Mac).
+| `MEMORY/` | Classified append-only memory (8 files) |
 
 ---
 

@@ -18,7 +18,7 @@ This folder (`/Users/aashumotlani/awesomepg/docs`) is a **structured, Git-backed
 | **Preserve history** | [[CHANGELOG]] and [[DECISIONS]] are append-only. Move bugs open → resolved in [[BUGS]]; do not erase entries. |
 | **Wiki-link graph** | Connect notes with `[[Note Name]]` so Obsidian graph and AI link-following stay consistent. |
 | **Read order** | [[START_HERE]] → this file → [[CURRENT_STATE]] → domain hub → detail doc. |
-| **Code ↔ docs sync** | App code changes in the parent repo should update relevant brain docs. Parent repo pre-commit hook flags affected files; this vault can auto-commit via `scripts/auto-sync.sh`. |
+| **Code ↔ docs sync** | App repo pre-commit flags brain docs; vault syncs via `./scripts/brain-sync.sh` → GitHub |
 | **Clarity for agents** | Use headings, tables, and bullet lists. Prefer explicit routes, table names, and service file paths over vague prose. |
 
 **Entry point for any AI:** [[START_HERE]]
@@ -36,7 +36,11 @@ This folder (`/Users/aashumotlani/awesomepg/docs`) is a **structured, Git-backed
 | Strategic idea (not yet decided) | [[ideas]] | "Inline approve from ops queue" |
 | Decision made | [[decisions]] | "Use Git-backed vault sync" |
 | Lesson / insight | [[insights]] | "Date objects crash RSC clients" |
+| Bug / problem | [[bugs]] | "Ops queue missing customerId" |
 | Mistake / failure | [[mistakes]] | "Duplicate billing math in UI" |
+| Vault / brain update | [[changelog]] | "Live brain system installed" |
+
+**After meaningful edits:** run `./scripts/brain-sync.sh` (see `.cursor/rules.md`).
 
 **Rules:**
 

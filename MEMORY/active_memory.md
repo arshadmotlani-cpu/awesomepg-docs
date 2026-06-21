@@ -7,9 +7,23 @@
 
 ## Current Focus
 
-- Git-backed AI second brain in `/docs` with structured **MEMORY/** classification
+- **Live AI brain loop** — classify → MEMORY/ → `brain-sync.sh` → GitHub
+- Git-backed vault synced to https://github.com/arshadmotlani-cpu/awesomepg-docs
 - Stabilize vacating / checkout ops post-`d4c01c6` deploy
 - Consolidate admin actions into [[Operations]] + module hubs
+
+---
+
+## Current Blockers
+
+- None for vault sync (GitHub push working via SSH)
+- Post-deploy verification of vacating/ops fixes still pending ([[tasks]])
+
+---
+
+## Latest Decisions
+
+See [[decisions]] · Recent: MEMORY engine + `docs/.cursor/rules.md` + `brain-sync.sh` (2026-06-22)
 
 ---
 
