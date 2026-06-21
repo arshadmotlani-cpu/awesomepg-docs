@@ -86,3 +86,14 @@ See [[tasks]] for full task log. Current:
 <!-- INTELLIGENCE_DELTAS_END -->
 
 
+<!-- SEMANTIC_STATE_START -->
+## Semantic State
+
+> **Last analyzed:** 2026-06-21T20:04:15Z
+
+- **Current system intent:** The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
+- **Dominant change type:** MIXED (see changelog)
+- **System momentum:** HIGH (7 vault commits in 24h)
+- **Risk level:** LOW
+
+<!-- SEMANTIC_STATE_END -->

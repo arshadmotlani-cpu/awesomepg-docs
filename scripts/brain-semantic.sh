@@ -51,11 +51,11 @@ SCORE_BUG=0 SCORE_FEATURE=0 SCORE_REFACTOR=0 SCORE_DECISION=0 SCORE_TASK=0
 
 score_keywords() {
   local text="$1"
-  echo "$text" | grep -qiE '\b(fix|fixed|bug|crash|error|regression|broken|issue)\b' && SCORE_BUG=$((SCORE_BUG + 3))
-  echo "$text" | grep -qiE '\b(feature|added|adds|new capability|introduce)\b' && SCORE_FEATURE=$((SCORE_FEATURE + 3))
-  echo "$text" | grep -qiE '\b(refactor|restructure|reorganiz|rename|move|layout)\b' && SCORE_REFACTOR=$((SCORE_REFACTOR + 3))
-  echo "$text" | grep -qiE '\b(decision|decided|ADR|architectural|policy)\b' && SCORE_DECISION=$((SCORE_DECISION + 3))
-  echo "$text" | grep -qiE '\b(TODO|task|\[ \]|implement|WIP)\b' && SCORE_TASK=$((SCORE_TASK + 2))
+  echo "$text" | grep -qiE '\b(fix|fixed|bug|crash|error|regression|broken|issue)\b' && SCORE_BUG=$((SCORE_BUG + 3)) || true
+  echo "$text" | grep -qiE '\b(feature|added|adds|new capability|introduce)\b' && SCORE_FEATURE=$((SCORE_FEATURE + 3)) || true
+  echo "$text" | grep -qiE '\b(refactor|restructure|reorganiz|rename|move|layout)\b' && SCORE_REFACTOR=$((SCORE_REFACTOR + 3)) || true
+  echo "$text" | grep -qiE '\b(decision|decided|ADR|architectural|policy)\b' && SCORE_DECISION=$((SCORE_DECISION + 3)) || true
+  echo "$text" | grep -qiE '\b(TODO|task|\[ \]|implement|WIP)\b' && SCORE_TASK=$((SCORE_TASK + 2)) || true
 }
 
 score_keywords "$DIFF"
@@ -93,6 +93,7 @@ STRONG=0
 IMPACT="LOW"
 N=${#ANALYZE[@]}
 LINES=$(echo "$STAT" | tail -1 | grep -oE '[0-9]+ insertion' | grep -oE '[0-9]+' || echo 0)
+LINES=${LINES:-0}
 
 if [[ $N -ge 6 ]] || [[ ${LINES:-0} -ge 200 ]]; then
   IMPACT="HIGH"
@@ -145,6 +146,8 @@ echo "$TS_FULL" >> "$MOMENTUM_FILE" 2>/dev/null || true
 # ── Risk (BUG/DECISION ratio from recent log) ────────────────────────────────
 RECENT_BUGS="$(git log --since='7 days ago' --oneline 2>/dev/null | grep -ci 'bug' || true)"
 RECENT_DEC="$(git log --since='7 days ago' --oneline 2>/dev/null | grep -ci 'decision' || true)"
+RECENT_BUGS=${RECENT_BUGS:-0}
+RECENT_DEC=${RECENT_DEC:-0}
 RISK="LOW"
 if [[ "$TYPE" == "BUG" && "$IMPACT" == "HIGH" ]]; then
   RISK="HIGH"
@@ -249,3 +252,4 @@ EOF
 export BRAIN_SEMANTIC_RAN=1
 echo "[semantic] ${TYPE} | ${IMPACT} impact | ${MSG}"
 echo "[semantic] ${REASON}"
+exit 0

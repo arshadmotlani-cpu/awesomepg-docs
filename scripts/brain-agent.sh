@@ -42,9 +42,10 @@ if git diff --cached --quiet; then
 fi
 
 # 3 — Semantic analysis (staged diff)
-export BRAIN_SEMANTIC_RAN=0
 if [[ -x "$SEMANTIC" ]]; then
-  "$SEMANTIC" || true
+  if "$SEMANTIC"; then
+    export BRAIN_SEMANTIC_RAN=1
+  fi
 fi
 
 # 4 — Classification engine (MEMORY type files; skips duplicate changelog if semantic ran)

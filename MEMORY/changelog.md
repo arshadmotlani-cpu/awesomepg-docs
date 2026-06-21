@@ -60,3 +60,15 @@ When `brain-sync.sh` or Cursor agent completes a memory update, append:
 <!-- INTEL_LOG_2026-06-21T20:03:44Z -->
 - **2026-06-21T20:03:44Z** | **BUG** | 6 files changed, 360 insertions(+), 59 deletions(-)
   - Files: .gitignore,INTELLIGENCE.md,MEMORY/active_memory.md
+
+<!-- SEMANTIC_2026-06-21T20:04:15Z -->
+---
+Time: 2026-06-21T20:04:15Z
+Type: MIXED
+Impact: MEDIUM
+Reason: The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
+Files:
+- scripts/brain-agent.sh
+- scripts/brain-semantic.sh
+
+---
