@@ -48,3 +48,11 @@ When `brain-sync.sh` or Cursor agent completes a memory update, append:
 
 <!-- AGENT_LOG_2026-06-21T19:41:12Z -->
 - **2026-06-21T19:41:12Z** — agent classified `active` (7 file(s))
+
+<!-- INTEL_LOG_2026-06-21T19:59:31Z -->
+- **2026-06-21T19:59:31Z** | **BUG** | 4 files changed, 217 insertions(+), 104 deletions(-)
+  - Files: .gitignore,MEMORY/active_memory.md,INTELLIGENCE.md
+
+<!-- INTEL_LOG_2026-06-21T19:59:45Z -->
+- **2026-06-21T19:59:45Z** | **BUG** | 11 files changed, 368 insertions(+), 104 deletions(-)
+  - Files: .gitignore,INTELLIGENCE.md,MEMORY/active_memory.md,MEMORY/bugs.md,MEMORY/changelog.md,MEMORY/decisions.md,MEMORY/ideas.md,MEMORY/insights.md,MEMORY/tasks.md

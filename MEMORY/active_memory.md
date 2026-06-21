@@ -7,7 +7,7 @@
 
 ## Current Focus
 
-- **Live AI brain loop** — `brain-watch.sh` → `brain-agent.sh` → `brain-classify.sh` → GitHub
+- **IDE Activity Intelligence Layer** — `brain-classify.sh` → MEMORY + changelog + git journal
 - Git-backed vault synced to https://github.com/arshadmotlani-cpu/awesomepg-docs
 - Stabilize vacating / checkout ops post-`d4c01c6` deploy
 - Consolidate admin actions into [[Operations]] + module hubs
@@ -67,8 +67,20 @@ See [[tasks]] for full task log. Current:
 <!-- AGENT_STATUS_START -->
 ## Agent status
 
-> **Last run:** 2026-06-21T19:41:12Z  
-> **Classification:** active  
-> **Files touched:** 7
+> **Last run:** 2026-06-21T19:59:45Z  
+> **Primary type:** BUG  
+> **All types:**  · REFACTOR ·  · BUG ·  · DECISION ·  · INSIGHT ·  · TASK ·  · FEATURE ·   
+> **Files:** 9
 
 <!-- AGENT_STATUS_END -->
+
+
+<!-- INTELLIGENCE_DELTAS_START -->
+### 2026-06-21T19:59:45Z — review recommended
+
+- **Signal:** BUG change in project state files
+- **Action:** Verify Current Focus / Blockers / Priorities still accurate
+- **Trigger files:** .gitignore,INTELLIGENCE.md,MEMORY/active_memory.md,MEMORY/bugs.md,MEMORY/changelog.md,MEMORY/decisions.md,MEMORY/ideas.md,MEMORY/insights.md,MEMORY/tasks.md
+
+<!-- INTELLIGENCE_DELTAS_END -->
+

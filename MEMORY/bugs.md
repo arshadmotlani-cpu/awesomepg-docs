@@ -40,3 +40,33 @@
 ## Related
 
 [[mistakes]] · [[BUGS]] · [[tasks]] · [[active_memory]] · [[insights]]
+
+<!-- INTEL_2026-06-21T19:59:31Z -->
+### 2026-06-21T19:59:31Z
+
+- **Types:**  · REFACTOR ·  · BUG ·  · TASK ·  · DECISION ·  · INSIGHT ·  · FEATURE · 
+- **Primary:** BUG
+- **Summary:** 4 files changed, 217 insertions(+), 104 deletions(-)
+- **Files:**
+- `.gitignore`
+- `MEMORY/active_memory.md`
+- `INTELLIGENCE.md`
+
+
+<!-- INTEL_2026-06-21T19:59:45Z -->
+### 2026-06-21T19:59:45Z
+
+- **Types:**  · REFACTOR ·  · BUG ·  · DECISION ·  · INSIGHT ·  · TASK ·  · FEATURE · 
+- **Primary:** BUG
+- **Summary:** 11 files changed, 368 insertions(+), 104 deletions(-)
+- **Files:**
+- `.gitignore`
+- `INTELLIGENCE.md`
+- `MEMORY/active_memory.md`
+- `MEMORY/bugs.md`
+- `MEMORY/changelog.md`
+- `MEMORY/decisions.md`
+- `MEMORY/ideas.md`
+- `MEMORY/insights.md`
+- `MEMORY/tasks.md`
+

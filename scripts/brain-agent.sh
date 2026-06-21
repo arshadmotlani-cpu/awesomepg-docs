@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
-# Autonomous Memory Agent — classify → MEMORY/ → commit → push
+# IDE Activity Intelligence Agent — development journal engine for /docs vault.
+# Pipeline: detect → classify → MEMORY → changelog → git commit → push
 set -euo pipefail
 
 VAULT="/Users/aashumotlani/awesomepg/docs"
 LOCK_FILE="$VAULT/.brain.lock"
 CLASSIFY="$VAULT/scripts/brain-classify.sh"
+STATE_FILE="$VAULT/.brain-last-classify"
 cd "$VAULT"
 
-echo "🧠 Brain Agent Triggered..."
+echo "🧠 Brain Agent (Intelligence Layer)..."
 
 if [[ -f "$LOCK_FILE" ]]; then
   echo "Agent already running..."
@@ -17,57 +19,44 @@ fi
 touch "$LOCK_FILE"
 trap 'rm -f "$LOCK_FILE"' EXIT
 
-# 1. Detect changes (before staging)
-CHANGED_FILES="$(git status --porcelain || true)"
-
-if [[ -z "$CHANGED_FILES" ]]; then
-  echo "No changes detected."
-  exit 0
+# STEP 1 — Detect change (must have real diff or untracked content)
+if git diff --quiet 2>/dev/null && git diff --cached --quiet 2>/dev/null; then
+  if [[ -z "$(git status --porcelain 2>/dev/null || true)" ]]; then
+    echo "No changes detected."
+    exit 0
+  fi
 fi
 
-# 2. Classify and append to MEMORY/ (heuristic — no destructive edits)
+# STEP 2–4 — Classify + MEMORY + changelog
 if [[ -x "$CLASSIFY" ]]; then
-  "$CLASSIFY" || true
+  if ! "$CLASSIFY"; then
+    echo "[agent] Classifier reported no actionable changes."
+    exit 0
+  fi
 fi
 
-# 3. Stage all changes (including classifier appends; never stage lock files)
+# STEP 5 — Git sync
 git add -A
-git reset -q HEAD -- .brain.lock .auto-sync.lock 2>/dev/null || true
+git reset -q HEAD -- .brain.lock .auto-sync.lock .brain-last-classify 2>/dev/null || true
 
 if git diff --cached --quiet; then
-  echo "No staged changes after classification."
+  echo "No staged changes after intelligence pass."
   exit 0
 fi
 
-# 4. Commit message from content type (filename heuristic)
-MSG="brain: auto memory update"
-
-if echo "$CHANGED_FILES" | grep -qE 'MEMORY/tasks|tasks\.md'; then
-  MSG="brain: task update"
-elif echo "$CHANGED_FILES" | grep -qE 'MEMORY/ideas|ideas\.md'; then
-  MSG="brain: idea update"
-elif echo "$CHANGED_FILES" | grep -qE 'MEMORY/decisions|decisions\.md|DECISIONS\.md|CURRENT_STATE'; then
-  MSG="brain: decision update"
-elif echo "$CHANGED_FILES" | grep -qE 'MEMORY/insights|insights\.md'; then
-  MSG="brain: insight update"
-elif echo "$CHANGED_FILES" | grep -qE 'MEMORY/bugs|BUGS\.md|bugs\.md'; then
-  MSG="brain: bug update"
-elif echo "$CHANGED_FILES" | grep -qE 'MEMORY/mistakes|mistakes\.md'; then
-  MSG="brain: mistake update"
-elif echo "$CHANGED_FILES" | grep -qE 'MEMORY/changelog|CHANGELOG\.md'; then
-  MSG="brain: changelog update"
-elif echo "$CHANGED_FILES" | grep -qE 'MEMORY/active_memory|active_memory\.md'; then
-  MSG="brain: active memory update"
+MSG="brain: memory sync"
+if [[ -f "$STATE_FILE" ]]; then
+  # shellcheck disable=SC1090
+  source "$STATE_FILE"
 fi
 
-# 5. Commit safely
 git commit -m "$MSG"
 
-# 6. Push only if remote exists
 if git remote get-url origin >/dev/null 2>&1; then
   git push origin HEAD
+  echo "✅ Intelligence sync complete → GitHub ($MSG)"
 else
-  echo "No origin remote — committed locally only."
+  echo "⚠️  No origin remote — committed locally ($MSG)"
+  echo "    Add remote: git remote add origin <url>"
+  exit 0
 fi
-
-echo "✅ Brain sync complete ($MSG)"
