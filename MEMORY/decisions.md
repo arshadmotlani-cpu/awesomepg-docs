@@ -1,0 +1,38 @@
+# Memory — Decisions
+
+> **Append-only** log of decisions made (operational + strategic).  
+> Formal ADRs with full rationale: [[DECISIONS]] (do not duplicate — cross-link instead).
+
+**Rule:** One bullet per decision. Never delete entries.
+
+---
+
+## 2026-06-22
+
+- Adopted **MEMORY/** folder for auto-structured AI memory (ideas, tasks, insights, mistakes, decisions, active_memory)
+- Moved system docs to `SYSTEM/` and project inventory to `PROJECT/features.md` — vault structure enforced
+- Docs vault is standalone Git repo at `/Users/aashumotlani/awesomepg/docs` with fswatch auto-sync scripts
+
+## 2026-06-21
+
+- Maintain `/docs` as Obsidian-compatible second brain; update on every code change ([[DECISIONS#Documentation second brain]])
+- On vacating submit/approve, auto pro-rate checkout-month rent via `vacatingCheckoutBilling.ts` ([[DECISIONS#Vacating checkout rent sync]])
+- Split vacate notice from deposit refund — meter/UPI only after approve + vacate date ([[DECISIONS#Split vacate request from deposit refund]])
+- Primary operator actions live in [[Operations]] queue ([[DECISIONS#Operations as action hub]])
+- Serialize `Date` → ISO before passing to client components ([[DECISIONS#Client Date serialization]])
+- Align bed map and residents list via `occupancySsot.ts` ([[DECISIONS#Bed assignment SSOT alignment]])
+
+---
+
+## How to append
+
+```markdown
+## YYYY-MM-DD
+- Decided to … (link [[DECISIONS#…]] if formal ADR exists)
+```
+
+---
+
+## Related
+
+[[active_memory]] · [[DECISIONS]] · [[insights]] · [[AI_CONTEXT]]
