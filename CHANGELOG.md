@@ -5,6 +5,23 @@
 
 ---
 
+## 2026-06-22
+
+### Fixed
+- **VAC-CRASH-02** — Move-outs advanced tools: serialize `Map`/`Date` props before client boundary [[BUGS#VAC-CRASH-02]]
+- **VAC-DATE-01** — Vacating date pickers: `tryDiffDays` guards + default to today / `expected_checkout_date` [[BUGS#VAC-DATE-01]]
+- **EXP-INV-01** — Express walk-in invoice mirror for rent + deposit-only sales via `finalizeExpressWalkInFinancialInvoice` [[BUGS#EXP-INV-01]]
+- **SEARCH-01** — Admin resident substring search (2-char / 2-digit phone) [[BUGS#SEARCH-01]]
+
+### Changed
+- Vacating forms default checkout/vacate date to today or booking `expected_checkout_date` when set
+- Express walk-in check-in defaults to today; fixed-stay checkout auto-fills +30 nights
+
+### Added
+- Unit tests: `moveOutPipeline.test.ts`, `adminResidentSearch.test.ts`, `expressWalkInInvoice.test.ts`
+
+---
+
 ## 2026-06-21
 
 ### Added
