@@ -7,16 +7,94 @@
 
 ## Open bugs
 
+### VAC-B5-01 — Room 203 B5 vacating invisible / admin vacating crash
+
+| | |
+|---|---|
+| **Severity** | Critical |
+| **Symptom** | Harish (203 B5): vacating + checkout visible in ops, `/admin/vacating` crashes, refund badge but empty legacy refund list |
+| **Root cause** | (1) `listAdminVacatingRequests` INNER JOIN on `primary` bed_reservation dropped rows after bed release; (2) `getDepositSummaryForBooking` threw on corrupt ledger and crashed page load; (3) refund counter from checkout settlements + action_items but list only queried `resident_requests`; stale `refund_request_submitted` badges |
+| **Fix** | LEFT JOIN LATERAL bed location in vacating list; deposit summary returns null on error; RefundRequestsOpsPanel shows checkout settlements; resolve stale refund action items when checkout settlement active; `scripts/investigate-bed-203-b5.ts` + `repair-bed-203-b5-lifecycle.ts` |
+
+---
+
 | ID | Severity | Summary | Workaround |
 |----|----------|---------|------------|
 | OPS-UX-01 | Medium | Duplicate vacating/deposit/refund actions across profile, bed map, overview | Use [[Operations]] + `/admin/vacating` + checkout settlements only ([[DECISIONS#Operations as action hub]]) |
 | OPS-UX-02 | Low | Legacy routes (`/admin/requests`, `/admin/collections`) still linked in old bookmarks | Use canonical routes in [[ROUTES]] |
 | RES-LIST-01 | Low | `listResidentsForAdmin` LIMIT 200 may omit older vacated residents in ops timeline | Open resident profile directly by ID |
 | VAC-SAME-01 | Low | Same-day vacating approve shortens `[start,today)` excluding today — completion must not shorten before move-out day | See `vacatingCheckout.test.ts`; use complete flow same day |
+| FIN-AUDIT-01 | Low | Historical invoices may have `amountPaise` ≠ line sum or unreconciled payments | Run `npx tsx scripts/audit-financials.ts` then `repair-financials.ts --dry-run` |
+
+---
+
+### NAV-SB-01 — Admin sidebar navigation unreliable (double-click / no-op)
+
+| | |
+|---|---|
+| **Severity** | High |
+| **Symptom** | Sidebar items (Operations, KYC, PGs, Checkout Settlements, Residents, etc.) often ignored first click; navigation felt delayed |
+| **Root cause** | `AdminLiveRefreshProvider` called `router.refresh()` every 30s, re-executing the dynamic admin layout (`requireAdminSession` + badge load) and racing client `Link` navigations |
+| **Fix** | Removed periodic `router.refresh()` (badge poll remains client-side); `AdminNavLink` with prefetch + optimistic active state; nav timing logs warn when click→route or click→visible exceeds 200ms; sidebar `z-20` stacking |
 
 ---
 
 ## Resolved bugs
+
+### BOOK-OUTST-01 — Prior stay outstanding not included in new booking payment
+
+| | |
+|---|---|
+| **Severity** | High |
+| **Symptom** | Resident with deposit balance due on a prior booking could start a new stay but checkout total ignored the outstanding amount |
+| **Root cause** | Checkout totals only summed new-booking rent + deposit; no query of `getBookingFinancialSummary` / deposit due on prior bookings |
+| **Fix** | `getCustomerPriorOutstandingForCheckout()` snapshotted on booking create; included in `totalToCollectToday`; prior deposit slice allocated via append-only `recordDepositCollected` on payment |
+
+---
+
+### BOOK-HYBRID-01 — Hybrid fixed-stay rent breakdown hidden in booking UI
+
+| | |
+|---|---|
+| **Severity** | Medium |
+| **Symptom** | 10-day stay showed ₹1,900 rent only (weekly) without the extra 3 daily days |
+| **Root cause** | Client preview used `previewLowestFixedStayRent()` (subtotal only); UI never rendered `computeLowestFixedStayRent` line items |
+| **Fix** | `previewFixedStayQuote()` + `BookingPriceBreakdown` with week/day lines; `rentLineItems` snapshotted on booking |
+
+---
+
+### BOOK-TOTAL-01 — Deposit excluded from “Total to pay today”
+
+| | |
+|---|---|
+| **Severity** | High |
+| **Symptom** | Rent ₹1,900 + deposit ₹950 displayed, but total showed ₹1,900 |
+| **Root cause** | `breakdownBookingPayment()` computed `rentDue = totalPaise − depositCashDue` so when `booking.totalPaise` omitted deposit (or deposit credit zeroed cash due), UI showed full deposit line but total matched rent only; checkout components also trusted inconsistent props |
+| **Fix** | `computeNewBookingCheckoutTotals()` / `breakdownBookingCheckoutPayment()` — total = rent + deposit due now + prior outstanding; all booking flow screens use shared breakdown |
+
+---
+
+### FIXED-STAY-EXPIRE-01 — Fixed-stay bookings never auto-completed at checkout
+
+| | |
+|---|---|
+| **Severity** | High |
+| **Symptom** | Daily/weekly/fixed_stay bookings stayed `confirmed` indefinitely after checkout date; beds remained occupied; deposit refund never unlocked |
+| **Root cause** | No cron/job for fixed-stay auto-completion at 11 AM IST — only `vacatingPastDue`, `release-holds`, etc. |
+| **Fix** | `fixedStayAutoExpiry.ts` + daily automation cron (06:00 UTC) + manual `/api/cron/expire-fixed-stays`; completes booking, releases bed, creates checkout settlement + `fixed_stay_checkout_due` action item |
+
+---
+
+### BOOK-DATE-01 — Mobile Edit on stay date picker does nothing
+
+| | |
+|---|---|
+| **Severity** | High |
+| **Symptom** | Tapping **Edit** on the stay date field inside `BedBookingPanel` (bottom sheet) appeared to do nothing on mobile |
+| **Root cause** | `StayDateRangePicker` calendar portal used default/low z-index while `MobileBottomSheet` panel sits at `99999`, so the modal opened behind the sheet |
+| **Fix** | Shared `src/lib/ui/layerZIndex.ts` (`LAYER_Z.nestedOverlay` / `nestedDialog` > `bottomSheetPanel`); separate 44×44px Edit button |
+
+---
 
 ### BROWSE-OVERLAP-01 — PG listing cards overlap on `/pgs` browse (mobile)
 
@@ -37,6 +115,17 @@
 | **Symptom** | Approved vacating with vacate date 18 Jun still shows “notice period” on 22 Jun; no admin signal |
 | **Root cause** | By design beds stay occupied until checkout settlement completes ([[DECISIONS#Checkout settlements as refund SSOT]]), but UI labels never switched to “overdue” and `syncVacatingAlerts` used the same title/priority for past-due rows. Daily cron (`/api/cron/automation`) already runs `syncActionItemsForCron` but did not distinguish overdue move-outs |
 | **Fix** | `bedAvailabilityState.ts` past-due copy; `syncVacatingAlerts` high-priority overdue titles + settlement link; `processVacatingPastDueDaily()` in daily cron; `resolveStaleVacatingActionItems()` when request completes |
+
+---
+
+### VAC-B5-01 — Room 203 B5 move-out crash + refund badge mismatch
+
+| | |
+|---|---|
+| **Severity** | Critical |
+| **Symptom** | Shanti Nagar 203-B5: vacating + checkout pending in UI; `/admin/vacating` crashes; refund sidebar badge > 0 but `/admin/requests` empty |
+| **Root cause** | (1) Client `MoveOutPipelineQueue` used raw `diffDays` on ISO timestamp dates from Postgres; bigint paise could cross RSC boundary. (2) `listAdminVacatingRequests` lateral bed pick did not prefer today's active primary reservation. (3) `/admin/requests` listed legacy `resident_requests` only while badges counted checkout-settlement `refund_pending` / `refund_request_submitted` action items. |
+| **Fix** | `normalizeIsoDateOnly` + `tryDiffDays` in pipeline/approval paths; coerce paise in `toMoveOutAdvancedToolsRow`; prefer active primary bed in vacating query; unified refund queue on `/admin/requests`; `scripts/investigate-bed-203-b5.ts` + `scripts/repair-bed-203-b5.ts` |
 
 ---
 
