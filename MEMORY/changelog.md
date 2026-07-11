@@ -9,6 +9,8 @@
 
 ## 2026-07-11
 
+- **CAPITAL-OS-OVERVIEW** — Investment OS Overview dashboard + manual profits (`ac_manual_profits`, ledger `manual_profit`); Neon migration applied; screenshots in `.invoice-pdf-samples/dashboard-screenshots/`
+- **OPS-BA-02** — Sidebar Operations/Overview badges now equal `unifiedOperationsQueue.totalCount` (same SSOT as Operations page); no residents parallel queue
 - **OPS-BA-01** — Booking Approval no longer lists approved/Reserved bed reserves; open href SSOT is `/admin/bookings/:id` (`src/lib/operations/bookingApprovalQueue.ts`)
 
 ## 2026-07-10 (continued)
@@ -158,157 +160,23 @@ Files:
 
 - 2026-07-11: Fixed invest.awesomepg.in serving PG — Capital app committed to main with host allowlist middleware
 
-<!-- SEMANTIC_2026-07-11T04:39:40Z -->
+<!-- SEMANTIC_2026-07-11T06:49:12Z -->
 ---
-Time: 2026-07-11T04:39:40Z
+Time: 2026-07-11T06:49:12Z
 Type: MIXED
 Impact: HIGH
-Reason: Move-out and checkout documentation is evolving — likely reflecting vacating ops or refund workflow changes.
+Reason: The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
 Files:
-- ADMIN_FINANCIAL_UI_MIGRATION.md
-- ADMIN_PERFORMANCE_INVESTIGATION.md
-- APG-2026-0036_BOOKING_MODEL_INVESTIGATION.md
-- ARCHITECTURE.md
-- AUTH_DUAL_LOGIN.md
-- AUTH_SSOT_INVESTIGATION.md
-- Action Center.md
-- BED_EXPLORER_SSOT_PLAN.md
-- BOOKING_APPROVAL_OCCUPANCY_INVESTIGATION.md
-- BOOKING_LIFECYCLE_SSOT_PLAN.md
-- BOOKING_RENT_BACKFILL_0035_0036_REPORT.md
-- BUGS.md
-- Billing.md
-- Bookings.md
 - CHANGELOG.md
-- CRITICAL_BOOKING_AUTH_INVESTIGATION.md
 - CURRENT_STATE.md
-- DATABASE.md
-- DEAD_CODE_REMOVAL.md
 - DECISIONS.md
-- FINANCIAL_CHAIN_VERIFICATION_0035_0036.md
-- FINANCIAL_SSOT_AUDIT_REPORT.md
-- INVOICE_FINANCIAL_CONSISTENCY_REPAIR.md
-- INVOICE_PRODUCTION_AUDIT.md
-- INVOICE_SHARE_LINK_REPAIR.md
-- Invoices.md
-- KYC_VISIBILITY_AUDIT.md
-- LAUNCH_READINESS.md
-- MASTER_TEST_MATRIX.md
 - MEMORY/active_memory.md
 - MEMORY/bugs.md
 - MEMORY/changelog.md
-- MEMORY/decisions-resident-portal-v2.md
 - MEMORY/decisions.md
-- MEMORY/insights.md
 - MEMORY/tasks.md
-- MOBILE_AUDIT.md
-- NEON_BRANCH_SETUP.md
-- OCCUPANCY_SSOT_AUDIT.md
-- OPERATIONS_CENTER_AUDIT.md
-- OPERATIONS_FULL_AUDIT.md
-- OPERATIONS_QUEUE_AUDIT.md
-- PG_BULK_PRICING.md
-- PHASES_2_3_IMPLEMENTATION_REPORT.md
-- PHASE_1_OCCUPANCY_AUDIT.md
-- PRODUCTION_AUDIT_BASELINE.md
-- PRODUCTION_ISSUES_REPORT.md
-- PRODUCTION_READINESS_VALIDATION.md
-- PRODUCTION_SIGN_OFF_REPORT.md
-- PRODUCTION_STABILIZATION/FINDINGS_SIGNOFF.md
-- PRODUCTION_STABILIZATION/PHASE1_AUTH_SESSION_FINDINGS.md
-- PRODUCTION_STABILIZATION/PHASE2_ELECTRICITY_FINDINGS.md
-- PRODUCTION_STABILIZATION/PHASE3_PAYMENT_UX_FINDINGS.md
-- PRODUCTION_STABILIZATION/PHASE4_UPI_AUDIT_FINDINGS.md
-- PRODUCTION_STABILIZATION/PHASE5_OCCUPANCY_SSOT_APPROVAL_REQUEST.md
-- PRODUCTION_STABILIZATION/README.md
-- PRODUCTION_VERIFICATION_REPORT.md
 - PROJECT/features.md
-- RESIDENT_JOURNEY_CHECKLIST.md
-- REVENUE_INVOICE_VISIBILITY_REPORT.md
-- ROUTES.md
-- SECURITY_VERIFICATION.md
-- STABILIZATION_BASELINE.md
-- START_HERE.md
-- SYSTEM/CURRENT_STATE.md
 - SYSTEM/WORKFLOWS.md
-- SYSTEM_CONSISTENCY_REPORT.md
-- SYSTEM_GRAPH.md
-- SYSTEM_TRUTH_MAP.md
-- UNRESOLVED_ACTIONS_REPAIR.md
-- URL_CONSISTENCY_REPAIR.md
-- Vacating.md
-- automotive-capital/ARCHITECTURE.md
-- automotive-capital/CHANGELOG.md
-- automotive-capital/DATABASE.md
-- automotive-capital/DECISIONS.md
-- automotive-capital/DEPLOYMENT_CHECKLIST.md
 - automotive-capital/FEATURES.md
-- automotive-capital/README.md
-- automotive-capital/RISKS.md
-- automotive-capital/ROADMAP.md
-- automotive-capital/ROUTES.md
-- automotive-capital/SECURITY.md
-- automotive-capital/TASKS.md
-- automotive-capital/UI_SYSTEM.md
-- automotive-capital/WORKFLOWS.md
-- booking-conversion-audit.md
-- h10-regression-report.md
-- h10-resident-consistency.md
-- h10-screenshots/README.md
-- h10-screenshots/after/bookings-1280.png
-- h10-screenshots/after/bookings-390.png
-- h10-screenshots/after/bookings-768.png
-- h10-screenshots/after/login-1280.png
-- h10-screenshots/after/login-390.png
-- h10-screenshots/after/login-768.png
-- h10-screenshots/after/resident-home-1280.png
-- h10-screenshots/after/resident-home-390.png
-- h10-screenshots/after/resident-home-768.png
-- h10-screenshots/after/resident-payments-1280.png
-- h10-screenshots/after/resident-payments-390.png
-- h10-screenshots/after/resident-payments-768.png
-- h10-screenshots/after/resident-requests-1280.png
-- h10-screenshots/after/resident-requests-390.png
-- h10-screenshots/after/resident-requests-768.png
-- h10-screenshots/after/resident-wallet-1280.png
-- h10-screenshots/after/resident-wallet-390.png
-- h10-screenshots/after/resident-wallet-768.png
-- h10-screenshots/before/README.md
-- h10-screenshots/manifest.json
-- operations-consolidation-audit.md
-- reports/booking-stay-date-integrity-audit-1782802255016.md
-- screenshots/booking-funnel-ui/after/pg-funnel-desktop-1280.png
-- screenshots/booking-funnel-ui/after/pg-funnel-desktop-1440.png
-- screenshots/booking-funnel-ui/after/pg-funnel-mobile-390.png
-- screenshots/booking-funnel-ui/before/pg-funnel-desktop-1280.png
-- screenshots/booking-funnel-ui/before/pg-funnel-desktop-1440.png
-- screenshots/booking-funnel-ui/before/pg-funnel-mobile-390.png
-- screenshots/landing-ui/after/above-fold-desktop-1280.png
-- screenshots/landing-ui/after/above-fold-desktop-1440.png
-- screenshots/landing-ui/after/above-fold-mobile-390.png
-- screenshots/landing-ui/after/amenities-desktop-1280.png
-- screenshots/landing-ui/after/amenities-desktop-1440.png
-- screenshots/landing-ui/after/amenities-mobile-390.png
-- screenshots/landing-ui/after/features-desktop-1280.png
-- screenshots/landing-ui/after/features-desktop-1440.png
-- screenshots/landing-ui/after/features-mobile-390.png
-- screenshots/landing-ui/after/full-page-desktop-1280.png
-- screenshots/landing-ui/after/full-page-desktop-1440.png
-- screenshots/landing-ui/after/full-page-mobile-390.png
-- screenshots/landing-ui/before/above-fold-desktop-1280.png
-- screenshots/landing-ui/before/above-fold-desktop-1440.png
-- screenshots/landing-ui/before/above-fold-mobile-390.png
-- screenshots/landing-ui/before/full-page-desktop-1280.png
-- screenshots/landing-ui/before/full-page-desktop-1440.png
-- screenshots/landing-ui/before/full-page-mobile-390.png
-- testing/BOOKING_PAYMENT_E2E_REPORT.md
-- testing/BOOKING_PAYMENT_FIX_REPORT.md
-- testing/BOOKING_PAYMENT_VERIFICATION.md
-- testing/DEPOSIT_RISK_VERIFICATION.md
-- testing/DEPOSIT_VERIFICATION.md
-- testing/FINANCIAL_DOMAIN_REPORT.md
-- testing/P0_FINANCIAL_REPAIR_REPORT.md
-- testing/PAYMENT_REVIEWS_STATUS.md
-- testing/booking-payment-e2e-results.json
 
 ---
