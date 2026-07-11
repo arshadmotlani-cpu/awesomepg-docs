@@ -7,6 +7,14 @@
 
 ## Current Focus
 
+- **Automotive Capital host routing** — Root cause: Capital code was never on `main`; production git deploys served Awesome PG on invest. Fix: commit Capital + harden host/`x-forwarded-host` allowlist middleware.
+
+- **Automotive Capital production deploy** — App deployed on Vercel (`dpl_AUmX7CZo4PnTVwz2VAAgV3LwsYm4`); migrate+seed OK; login/dashboard/health/isolation verified via Vercel edge. **BLOCKED on public DNS**: add GoDaddy A record `invest → 76.76.21.21` (nameservers still domaincontrol.com).
+
+- **Automotive Capital planning** — Complete (2026-07-10): 13 docs in `docs/automotive-capital/`; private investment OS at `invest.awesomepg.in`; awaiting review/approval before Phase 1 code
+- **Operations Center P0 redesign** — Phase 1 audit complete (`docs/OPERATIONS_CENTER_AUDIT.md`); awaiting approval before implementation. Goal: true action center only, invoice/payment SSOT, no duplicate queues.
+- **Occupancy SSOT** — Critical: Admin bed map ≠ Public PG page for same bed; audit complete, implementation blocked on approval → `docs/OCCUPANCY_SSOT_AUDIT.md`
+- **Resident Portal V2** — 5-tab resident hub shipped (Profile/Payments/Requests/Referrals/ Concierge); legacy tab URLs redirect to V2
 - **Semantic Intelligence Layer** — `brain-semantic.sh` → intent + impact + `Semantic State`
 - Git-backed vault synced to https://github.com/arshadmotlani-cpu/awesomepg-docs
 - Stabilize vacating / checkout ops post-`d4c01c6` deploy
@@ -16,6 +24,9 @@
 
 ## Current Blockers
 
+- **invest.awesomepg.in DNS** — GoDaddy NS; missing A record `invest 76.76.21.21` (Vercel domain attached but not resolving publicly)
+
+- **Occupancy SSOT** — 6 independent compute paths; Phase 0 (`bedOccupancyEngine.ts` + parity tests) awaiting architecture approval
 - None for vault sync (GitHub push working via SSH)
 - Post-deploy verification of vacating/ops fixes still pending ([[tasks]])
 
@@ -29,11 +40,11 @@ See [[decisions]] · Recent: MEMORY engine + `docs/.cursor/rules.md` + `brain-sy
 
 ## Top 5 Priorities
 
-1. Verify `/admin/vacating` and [[Operations]] move-out queue end-to-end in production
-2. Approve pending move-outs (e.g. Mohd Aatif — notice filed, not approved)
-3. Complete checkout settlements in progress (e.g. Harish)
-4. Reduce duplicate vacating/deposit/refund CTAs across admin UI
-5. Keep MEMORY/ append-only — classify all new info before writing elsewhere
+1. **Approve Occupancy SSOT plan** — implement `bedOccupancyEngine.ts` + admin/public/resident parity tests before any UI patches
+2. Verify `/admin/vacating` and [[Operations]] move-out queue end-to-end in production
+3. Approve pending move-outs (e.g. Mohd Aatif — notice filed, not approved)
+4. Complete checkout settlements in progress (e.g. Harish)
+5. Reduce duplicate vacating/deposit/refund CTAs across admin UI
 
 ---
 
@@ -91,12 +102,13 @@ See [[tasks]] for full task log. Current:
 <!-- SEMANTIC_STATE_START -->
 ## Semantic State
 
-> **Last analyzed:** 2026-06-21T20:59:03Z
+> **Last analyzed:** 2026-07-11T04:39:40Z
 
 - **Current system intent:** Move-out and checkout documentation is evolving — likely reflecting vacating ops or refund workflow changes.
 - **Dominant change type:** MIXED (see changelog)
-- **System momentum:** HIGH (8 vault commits in 24h)
+- **System momentum:** LOW (0 vault commits in 24h)
 - **Risk level:** LOW
 
 <!-- SEMANTIC_STATE_END -->
+
 

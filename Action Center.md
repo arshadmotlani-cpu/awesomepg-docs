@@ -16,8 +16,10 @@ Derive **actionable tasks** from live database state (`syncActionItems()`), dedu
 
 ## Related features
 
-- Sync on overview + cron
-- Types: rent_due, electricity_due, kyc_pending, vacating, payment_proof, etc.
+- Sync on overview + cron (`automation` daily at 06:00 UTC ≈ 11:30 IST includes fixed-stay expiry; manual `/api/cron/expire-fixed-stays`)
+- Types: rent_due, electricity_due, kyc_pending, vacating_alert, fixed_stay_checkout_due, refund_request_submitted, etc.
+- **Persistence:** items resolve only on real action (approve, mark paid, settlement advance) — never on view
+- Overview shows top 5 oldest pending with age
 - Action Drawer on `/admin/operations`
 
 See [[features#Action Center]]

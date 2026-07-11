@@ -53,6 +53,24 @@ See [[ROUTES#Booking]]
 
 ---
 
+## Bed booking wizard (2026-06-23)
+
+`BedBookingPanel` is a 3-step flow after bed selection:
+
+1. **Plan** — Monthly (default, `open_ended`), Weekly, or Daily (`fixed_stay` with +7/+1 nights). `shortStayOnly` hides monthly and defaults weekly.
+2. **Dates** — `StayDateRangePicker` with live duration hint (e.g. `30 nights · ₹X/mo`).
+3. **Review** — Summary + **Confirm booking** → `/booking/new?start=&end=&mode=&bed=`.
+
+Optional `suggestedCheckIn` prefills rebooking extension check-in (prior checkout + 1 day). Validation (`validateAndContinue`) unchanged.
+
+**Checkout totals (2026-06-23):** All booking screens use `computeNewBookingCheckoutTotals()` — rent + deposit due now − wallet credit + prior stay outstanding. Fixed-stay hybrid pricing shows week + remainder day lines via `BookingPriceBreakdown`. Prior balances snapshotted in `pricing_snapshot.priorOutstanding`.
+
+**Fixed-stay lifecycle (2026-06-23):** Bookings with `duration_mode` in `fixed_stay` / `daily` / `weekly` auto-complete at 11 AM IST on checkout date (`fixedStayAutoExpiry.ts`). Deposit refund unlocks via `depositRefundUnlock.ts` after expiry completes the booking.
+
+See [[BUGS#BOOK-DATE-01]] for mobile Edit z-index fix.
+
+---
+
 ## Related database entities
 
 `bookings`, `bed_reservations`, `payments`, `pricing_snapshot` JSONB

@@ -5,6 +5,122 @@
 
 ---
 
+## 2026-06-25 (database environment SSOT)
+
+### Added
+- `src/lib/db/loadEnv.ts` — single loader for `.env` + `.env.local` (used by migrate, seed, drizzle-kit, CLI)
+- `formatDatabaseConfigReport()` — actionable diagnostics when database URL is missing
+- `src/lib/db/migrationSafety.ts` — connection banner + localhost guard on production/Vercel builds
+- `npm run env:pull` — `vercel env pull .env.local --environment=preview` (Neon `DATABASE_URL`)
+- `npm run env:check` — validate local database configuration
+
+### Fixed
+- `npm run db:migrate` failed locally because scripts only loaded `.env` (not `.env.local`) and Vercel Development env lacks `DATABASE_URL`
+- Empty `DATABASE_URL=""` placeholders from `vercel env pull` overwrote shell env and blocked resolution
+- Preview pull injected `VERCEL=1` locally and falsely triggered production migration guards
+- Resolver priority aligned: `DATABASE_URL` → `POSTGRES_URL` → `POSTGRES_PRISMA_URL`
+
+### Docs
+- [[START_HERE#Local development setup]] · [[DATABASE#Environment & migrations]]
+
+---
+
+## 2026-06-24 (URL consistency SSOT)
+
+### Added
+- `src/lib/url.ts` — `getAppUrl()`, `appAbsoluteUrl()`, `clientAppBaseUrl()` (production → `https://www.awesomepg.in`, preview → Vercel URL, dev → localhost)
+
+### Fixed
+- Invoice share, payment link, WhatsApp, KYC, referral, and password-reset links no longer fall back to `localhost:3000` or unset `NEXT_PUBLIC_APP_URL` on Vercel production
+
+---
+
+## 2026-06-24 (invoice + booking financial consistency)
+
+### Added
+- **Booking payment summary on rent invoices** — full checkout allocation (rent, deposit transfer, deposit collected, prior balance) + current deposit held from SSOT
+- `bookingPaymentFinancialProjection.ts` — shared financial story for invoice, verification, and surfaces
+- `invoiceFinancialSurfaceVerification.ts` — multi-surface deposit/allocation consistency checks for APG-0035/0036
+- Invoice detail cross-links: booking, resident, deposit, payment
+- `invoiceDueDate.ts` + `repairRentInvoiceDueDatesBeforeIssue()` — due date never before issue date
+
+### Fixed
+- Fixed-stay rent invoices created with `dueDate < issuedAt` when payment landed after check-in
+
+---
+
+## 2026-06-24 (bulk PG pricing management)
+
+### Added
+- **PG Pricing tab** — `/admin/pgs/[pgId]/pricing` bulk rent/deposit % updates with preview + `UPDATE` confirmation
+- `bulkPgPricing.ts` — preview/apply, `pg_price_revisions` audit history, financial fingerprint safety check
+- `pgInventoryPricing.writeBedPriceVersion()` — time-versioned `bed_prices` writes without touching bookings
+- `pgPricingSafetyAudit.ts` — SHA256 fingerprints for bookings, invoices, deposit ledger, checkout settlements
+- Migration `0069_pg_price_revisions.sql`
+- Unit tests `bulkPgPricing.test.ts`; script `verify-pg-pricing-safety.ts`
+
+### Fixed
+- **Pricing propagation** — `updateRoomBedPricing` no longer retroactively mutates active tenant bookings/invoices by default (`propagatePricingChangeForBeds` opt-in only via `affectExistingTenants: true`)
+- **Pricing Center** — copy updated: future bookings only; removed resident deposit auto-notify on room rate change
+
+---
+
+## 2026-06-23 (fixed-stay expiry + refund unlock)
+
+### Fixed
+- **FIXED-STAY-EXPIRE-01** — Confirmed fixed-stay/daily/weekly bookings stayed `confirmed` past checkout; no cron completed them at 11 AM IST [[BUGS#FIXED-STAY-EXPIRE-01]]
+
+### Added
+- `fixedStayAutoExpiry.ts` — IST checkout boundary, batch expiry, checkout settlement + bed release
+- Hourly cron `/api/cron/expire-fixed-stays` + `scripts/expire-fixed-stays-now.ts`
+- `depositRefundUnlock.ts` — unified locked/unlocked/submitted/approved/paid/rejected states
+- Action item types `fixed_stay_checkout_due`, `refund_request_submitted`; overview top-5 oldest pending
+- `pgs.average_electricity_bill_paise` for checkout average fallback
+- Unit tests: `fixedStayAutoExpiry`, `depositRefundUnlock`, `actionItemPersistence`
+
+---
+
+## 2026-06-23 (financial audit)
+
+### Added
+- **Financial audit engine** — 8-check customer scan (`financialIntegrityAudit.ts`), CLI scripts `audit-financials.ts` / `repair-financials.ts`
+- **Daily reconciliation cron** — `/api/cron/financial-reconciliation` at 06:30 UTC; `audit_log` + action items for manual review
+- **Admin health** — smoke check for last reconciliation run + issue counts
+- **Resident outstanding** — "All paid up" when zero; live query via `getLiveOutstandingBalance()`
+- `AUDIT_REPORT.md`, unit tests for audit/repair/reconciliation
+
+---
+
+## 2026-06-23 (continued)
+
+### Fixed
+- **BOOK-TOTAL-01** — Booking checkout showed rent as “Total to pay today” without deposit: `breakdownBookingPayment` derived rent from `totalPaise − deposit` instead of `subtotalPaise`; UI now uses `computeNewBookingCheckoutTotals` SSOT [[BUGS#BOOK-TOTAL-01]]
+- **BOOK-HYBRID-01** — Fixed-stay hybrid pricing (week + remainder days) hidden in booking UI; rent line items now shown on plan/dates/review and pay screens [[BUGS#BOOK-HYBRID-01]]
+- **BOOK-OUTST-01** — Prior stay outstanding balance (deposit due, unpaid invoices) now included in new booking checkout total and collected on payment [[BUGS#BOOK-OUTST-01]]
+
+### Added
+- `src/lib/billing/bookingCheckoutTotals.ts` — rent + deposit − credit + prior outstanding SSOT
+- `src/services/bookingPriorOutstanding.ts`, `BookingPriceBreakdown` component
+- `tests/unit/bookingCheckoutTotals.test.ts` (3/7/10/14-day pricing + outstanding cases)
+
+---
+
+## 2026-06-23
+
+### Fixed
+- **BOOK-DATE-01** — Mobile bed booking: Edit on `StayDateRangePicker` appeared dead because calendar portal rendered behind `MobileBottomSheet` (z-index 99999). Shared `LAYER_Z` constants nest picker at 100000+ [[BUGS#BOOK-DATE-01]]
+
+### Changed
+- `BedBookingPanel` — 3-step wizard (plan → dates → review); `CustomerBedDetailSheet` green “Available now” + single **Reserve this bed** CTA
+- `StayDateRangePicker` — separate 44×44px Edit touch target; nested modal uses `LAYER_Z`
+
+### Added
+- `tests/unit/layerZIndex.test.ts`, `tests/integration/criticalJourneys.test.ts`, Playwright smoke (`npm run test:e2e`)
+- Admin health page `/admin/health` + `GET /api/admin/smoke-checks`
+- CI workflow `.github/workflows/ci.yml`, root `DEPLOYMENT_CHECKLIST.md`
+
+---
+
 ## 2026-06-22 (continued)
 
 ### Added
@@ -120,38 +236,63 @@ See [[AWESOME_PG_MASTER_DOCUMENTATION]] for Phase 1–5.5 baseline (schema, bill
 
 ---
 
+## 2026-06-23 (post-deploy ops)
+
+### Added
+- `scripts/post-deploy-ops.ts` — trigger expire-fixed-stays + financial-reconciliation crons; optional `--with-db`
+- `DEPLOYMENT_CHECKLIST.md` — production DB ops (Neon env pull caveat, backfill expire, audit/repair)
+
+---
+
+## 2026-06-23 (Vercel deploy fix)
+
+### Fixed
+- **DEPLOY-BLOCK-01** — Production deploys failed silently after `d0a0e13`: hourly cron `0 * * * *` is not allowed on Vercel Hobby (daily only). Removed from `vercel.json`; fixed-stay expiry now runs inside daily `/api/cron/automation` (06:00 UTC). Manual `/api/cron/expire-fixed-stays` retained for backfill.
+
+---
+
 ## Related
 
 [[CURRENT_STATE]] · [[BUGS]] · [[DECISIONS]] · [[AI_CONTEXT]]
 
 <!-- DOC_SYNC_PENDING_START -->
-### Pending pre-commit sync · 2026-06-21 21:45:09 UTC
+### Pending pre-commit sync · 2026-07-11 04:31:31 UTC
 
-**Areas touched:** [[ROUTES]], [[Billing]]
+**Areas touched:** [[ROUTES]], [[Auth]]
 
 **Docs flagged for review:**
 - `ARCHITECTURE.md` — review for accuracy
 - `CHANGELOG.md` — review for accuracy
-- `PROJECT/features.md` — review for accuracy
 - `ROUTES.md` — review for accuracy
 - `SYSTEM/CURRENT_STATE.md` — review for accuracy
-- `SYSTEM/WORKFLOWS.md` — review for accuracy
 
-**Staged code files (14):**
-- `app/(admin)/admin/collections/pg/[pgId]/resident/[residentId]/page.tsx`
-- `app/(admin)/admin/invoices/[invoiceId]/page.tsx`
-- `app/(admin)/admin/invoices/[invoiceId]/print/page.tsx`
-- `app/(admin)/admin/invoices/actions.ts`
-- `app/(admin)/admin/invoices/page.tsx`
-- `app/(admin)/admin/operations/pg/[pgId]/resident/[residentId]/page.tsx`
-- `app/(admin)/admin/revenue/pg/[pgId]/resident/[residentId]/page.tsx`
-- `app/(customer)/account/resident/invoices/[invoiceId]/page.tsx`
-- `src/lib/billing/invoiceDocumentModel.ts`
-- `src/lib/billing/invoiceHrefMap.ts`
-- `src/lib/billing/invoiceNumbering.ts`
-- `src/lib/billing/invoiceRoutes.ts`
-- `src/lib/billing/sendInvoiceOnWhatsApp.ts`
-- `src/services/unifiedInvoices.ts`
+**Staged code files (28):**
+- `app/(capital)/(app)/activity/page.tsx`
+- `app/(capital)/(app)/analytics/loading.tsx`
+- `app/(capital)/(app)/analytics/page.tsx`
+- `app/(capital)/(app)/assets/[id]/page.tsx`
+- `app/(capital)/(app)/assets/loading.tsx`
+- `app/(capital)/(app)/assets/new/page.tsx`
+- `app/(capital)/(app)/assets/page.tsx`
+- `app/(capital)/(app)/capital/page.tsx`
+- `app/(capital)/(app)/dashboard/loading.tsx`
+- `app/(capital)/(app)/dashboard/page.tsx`
+- `app/(capital)/(app)/documents/page.tsx`
+- `app/(capital)/(app)/expenses/ReverseExpenseButton.tsx`
+- `app/(capital)/(app)/expenses/page.tsx`
+- `app/(capital)/(app)/layout.tsx`
+- `app/(capital)/(app)/ledger/page.tsx`
+- `app/(capital)/(app)/payments/page.tsx`
+- `app/(capital)/(app)/reports/[type]/page.tsx`
+- `app/(capital)/(app)/reports/page.tsx`
+- `app/(capital)/(app)/search/page.tsx`
+- `app/(capital)/(app)/settings/page.tsx`
+- `app/(capital)/auth/login/page.tsx`
+- `app/(capital)/layout.tsx`
+- `app/(capital)/not-found.tsx`
+- `app/api/capital/export/[type]/route.ts`
+- `app/api/capital/files/[id]/route.ts`
+- _…and 3 more staged files_
 
 **Changed:**
 - _(auto)_ Pre-commit doc sync — expand FEATURES/WORKFLOWS/DATABASE sections if behavior changed

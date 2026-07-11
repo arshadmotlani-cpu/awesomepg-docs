@@ -237,3 +237,60 @@ See [[DECISIONS#Operations as action hub]].
 
 <!-- DOC_SYNC_TOUCH_2026-06-21 -->
 > **2026-06-21 21:03:08 UTC** — Code changed in: Routes, Vacating, Billing. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-22 -->
+> **2026-06-22 00:18:56 UTC** — Code changed in: Routes. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-23 -->
+> **2026-06-23 07:25:58 UTC** — Code changed in: Routes, Auth, Billing. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-24 -->
+> **2026-06-24 07:05:49 UTC** — Code changed in: Routes. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-25 -->
+> **2026-06-25 12:10:42 UTC** — Code changed in: Routes. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-26 -->
+> **2026-06-26 07:02:31 UTC** — Code changed in: Routes, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-27 -->
+> **2026-06-27 07:03:22 UTC** — Code changed in: Routes. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-29 -->
+> **2026-06-29 08:55:28 UTC** — Code changed in: Routes, Billing, Vacating, Action Center. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-30 -->
+> **2026-06-30 06:36:43 UTC** — Code changed in: Routes, Residents. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-01 -->
+> **2026-07-01 06:24:39 UTC** — Code changed in: Routes, Residents. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-02 -->
+> **2026-07-02 07:48:57 UTC** — Code changed in: Routes. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-03 -->
+> **2026-07-03 07:18:22 UTC** — Code changed in: Routes. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-04 -->
+> **2026-07-04 07:42:32 UTC** — Code changed in: Routes. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-05 -->
+> **2026-07-05 10:29:21 UTC** — Code changed in: Routes, Database, Billing, Bookings, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-06 -->
+> **2026-07-06 16:23:12 UTC** — Code changed in: Routes, Database, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-07 -->
+> **2026-07-07 08:41:59 UTC** — Code changed in: Routes. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-08 -->
+> **2026-07-08 08:33:09 UTC** — Code changed in: Routes, Billing. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-09 -->
+> **2026-07-09 08:00:44 UTC** — Code changed in: Routes, Billing, Bookings. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-10 -->
+> **2026-07-10 09:34:34 UTC** — Code changed in: Routes. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-11 -->
+> **2026-07-11 04:31:31 UTC** — Code changed in: Routes, Auth. Manual review recommended.

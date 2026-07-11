@@ -7,6 +7,15 @@
 
 ---
 
+## 2026-07-10
+
+- **Automotive Capital architecture** — Host-based routing in same Next.js app; separate Neon DB (`INVEST_DATABASE_URL`); asset-first polymorphic schema; append-only ledger with reversals; custom DB sessions; Vercel Blob; shadcn/ui; code under `src/capital/` → `docs/automotive-capital/DECISIONS.md` (ADR-001–010)
+
+## 2026-07-02
+
+- **Booking Lifecycle SSOT** — Approved plan: 5 public bed states + admin `checkout_pending`; unbounded monthly `stay_range`; deposit policy PG→room→bed inheritance (PG UI only); Phase 1→2→2b→3→4 → `docs/BOOKING_LIFECYCLE_SSOT_PLAN.md`
+- **Resident Portal V2** — Consolidated 9 tabs into 5; Profile owns stay + wallet; Payments owns due + paid history; move-out merged into Requests; referral + room-shift backends added. Defaults: `docs/MEMORY/decisions-resident-portal-v2.md`
+
 ## 2026-06-22
 
 - Adopted **MEMORY/** folder for auto-structured AI memory (ideas, tasks, insights, mistakes, decisions, active_memory)

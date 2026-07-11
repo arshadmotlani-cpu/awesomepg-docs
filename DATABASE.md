@@ -255,6 +255,70 @@ Append-only: entity, action, diff JSON — all financial mutations.
 
 ---
 
+## Environment & migrations
+
+### Configuration SSOT
+
+| Piece | Location |
+|-------|----------|
+| URL resolver | `src/lib/db/env.ts` — `DATABASE_URL` → `POSTGRES_URL` → `POSTGRES_PRISMA_URL` |
+| Env file loader | `src/lib/db/loadEnv.ts` — loads `.env` then `.env.local` for scripts |
+| Drizzle client | `src/db/client.ts` |
+| Migrate CLI | `src/db/migrate.ts` — prints host/database before applying |
+
+### Local setup
+
+```bash
+npm install
+cp .env.example .env              # local Postgres URL (edit if needed)
+npx vercel link
+npm run env:pull                  # Preview secrets → .env.local (non-DB vars)
+# If using Neon: paste DATABASE_URL from Neon dashboard into .env.local
+npm run env:check
+npm run db:migrate
+npm run dev
+```
+
+### Vercel environment audit (2026-06-25)
+
+| Variable | Production | Preview | Development |
+|----------|------------|---------|-------------|
+| `DATABASE_URL` | ✅ (deploy-time) | ✅ (deploy-time) | ❌ missing |
+| `POSTGRES_URL` | ✅ (deploy-time) | ✅ (deploy-time) | ❌ missing |
+| `POSTGRES_PRISMA_URL` | ✅ (deploy-time) | ✅ (deploy-time) | ❌ missing |
+
+Neon/Vercel integration secrets are **injected at deploy time** and pull as **empty placeholders** in `.env.local`. For local DB access either use `.env` with local Postgres (`cp .env.example .env`) or paste the Neon connection string from the Neon dashboard into `.env.local`.
+
+Add `DATABASE_URL` to **Development** in Vercel (non-sensitive) if you want the raw URL in `vercel env pull` without using the Neon dashboard.
+
+### Commands
+
+| Command | Purpose |
+|---------|---------|
+| `npm run env:pull` | Pull Preview secrets into `.env.local` |
+| `npm run env:check` | Print database configuration report |
+| `npm run db:migrate` | Apply pending SQL migrations |
+| `npm run db:status` | JSON migration health |
+| `npm run db:seed` | Idempotent dev inventory seed |
+| `npm run db:reset` | Drop public schema (local only) |
+
+Migrations refuse **localhost** targets when `NODE_ENV=production` or on Vercel builds, so CI never silently migrates an empty local Postgres.
+
+### Drizzle journal — orphan SQL files (resolved 2026-07-04)
+
+Drizzle only runs migrations listed in `src/db/migrations/meta/_journal.json`. Four SQL files existed on disk but were never registered (journal skipped their numeric slot when the next migration was added). All four are **registered** — not deleted, not intentionally orphaned.
+
+| File | Why missing | Decision | Rationale |
+|------|-------------|----------|-----------|
+| `0025_room_page_views.sql` | Journal jumped `0024` → `0026` when `0026_active_only_overlap` was added | **Register** | Active Drizzle schema (`roomPageViews.ts`); table required for room analytics |
+| `0049_drop_dev_assistant.sql` | Journal jumped `0048` → `0050` when combined invoices landed | **Register** | Drops experimental tables created by `0047`/`0048`; production may still have dead `dev_assistant_*` tables |
+| `0057_admin_perf_indexes.sql` | Journal jumped `0056` → `0058` when checkout settlements shipped | **Register** | `CREATE INDEX IF NOT EXISTS` — safe idempotent perf indexes for admin drill-down |
+| `0067_booking_pending_approval_backfill.sql` | Journal jumped `0066` → `0068`; backfill must run in a separate migration after enum commit (see `tests/unit/migration0066.test.ts`) | **Register** | One-time `UPDATE` backfill for bookings with pending UPI proof; idempotent |
+
+**Rule:** Every new file under `src/db/migrations/*.sql` must get a journal entry before merge. Run `npm run db:status` or `readMigrationFiles` count vs SQL file count to detect drift.
+
+---
+
 ## Critical constraints (never break)
 
 1. **`bed_reservations` GiST EXCLUDE** — no double booking
@@ -282,3 +346,39 @@ Append-only: entity, action, diff JSON — all financial mutations.
 ## Related
 
 [[ROUTES]] · [[ARCHITECTURE]] · [[features]] · [[AI_CONTEXT]]
+
+<!-- DOC_SYNC_TOUCH_2026-06-23 -->
+> **2026-06-23 09:38:53 UTC** — Code changed in: Routes, Database, Billing, Bookings. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-24 -->
+> **2026-06-24 12:38:11 UTC** — Code changed in: Routes, Database, Residents. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-25 -->
+> **2026-06-25 14:28:27 UTC** — Code changed in: Routes, Database, Bookings. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-26 -->
+> **2026-06-26 08:55:12 UTC** — Code changed in: Routes, Database, Bookings, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-30 -->
+> **2026-06-30 11:14:13 UTC** — Code changed in: Routes, Database, Vacating, Electricity. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-01 -->
+> **2026-07-01 09:00:24 UTC** — Code changed in: Database, Billing, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-02 -->
+> **2026-07-02 11:27:12 UTC** — Code changed in: Routes, Database, Bookings, Bed Assignment, Residents, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-03 -->
+> **2026-07-03 00:04:40 UTC** — Code changed in: Database. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-04 -->
+> **2026-07-04 07:48:05 UTC** — Code changed in: Database, Electricity, Billing. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-05 -->
+> **2026-07-05 10:29:21 UTC** — Code changed in: Routes, Database, Billing, Bookings, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-06 -->
+> **2026-07-06 16:04:00 UTC** — Code changed in: Database. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-07 -->
+> **2026-07-07 06:19:57 UTC** — Code changed in: Database, Billing. Manual review recommended.

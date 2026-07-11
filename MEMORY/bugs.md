@@ -7,6 +7,10 @@
 
 ---
 
+## 2026-07-11
+
+- **OPS-BA-01** — Booking Approval queue kept showing Reserved bed reserves after payment proof approval (injected via `listActiveBedReserves` into `booking_approval`); "View reservation" linked to public `/booking/:code` (404 for admin). Fixed: remove active-reserve injection; approval rows use `/admin/bookings/:id` only (`bookingApprovalQueue.ts`).
+
 ## 2026-06-23
 
 - **NAV-SB-01** — Admin sidebar clicks ignored / required double-click → periodic `router.refresh()` in `AdminLiveRefreshProvider` raced Link navigation and re-suspended dynamic layout; removed 30s refresh, added optimistic active state + nav timing logs
@@ -21,9 +25,11 @@
 
 ## Open
 
+- **BOOK-MODEL-01** — Monthly `open_ended` bookings store finite `upper(stay_range)`; public occupancy treats it like fixed-stay checkout → "Available soon" on occupied B1 (APG-2026-0040) → `docs/APG-2026-0036_BOOKING_MODEL_INVESTIGATION.md`
+- **CHECKOUT-NOTICE-01** — Notice deduction ₹680 applied to fixed_stay APG-2026-0036 auto-expiry settlement (production diagnosis 2026-07-02)
 - **OPS-UX-01** — Duplicate vacating/deposit/refund CTAs across admin UI → use [[Operations]] only ([[BUGS#OPS-UX-01]])
 - **OPS-UX-02** — Legacy route bookmarks still in use → see [[ROUTES#Legacy redirects]]
-- **RES-LIST-01** — `listResidentsForAdmin` LIMIT 200 may omit older residents in ops timeline
+- **ELEC-DUE-01** — Approved electricity payments still in Electricity Due (Ishan ₹826, Anuj ₹827) → root cause: `approveElectricityPaymentProof` paid `amountPaise` only, leaving late-fee outstanding; duplicate June invoices per booking+month also possible → SSOT `electricityCollectibility.ts`, unified `listAdminElectricityInvoicesForReminders`, approval uses `projectElectricityInvoice().outstandingPaise`; prod verified Electricity Due (0) after late-fee cash settlement
 - **VAC-SAME-01** — Same-day vacating approve + stay shortening edge case → see tests
 
 ---

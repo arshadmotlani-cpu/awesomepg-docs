@@ -28,7 +28,17 @@
 
 ---
 
-### NAV-SB-01 — Admin sidebar navigation unreliable (double-click / no-op)
+### CHK-ZERO-01 — Zero-refund checkout stuck on “Waiting on resident” / UPI
+
+| | |
+|---|---|
+| **Severity** | High |
+| **Symptom** | Harish 203 B5: deposit ₹1,500 fully consumed by notice ₹595 + electricity ₹905 (refund ₹0), but checkout still `awaiting_resident_details`, deposit shows held, UPI requested |
+| **Root cause** | Checkout workflow always required UPI + resident submit even when `finalRefundPaise <= 0`; deductions only written to `deposit_ledger` at admin approve; status never auto-completed for zero balance |
+| **Fix** | Skip payout validation when refund ≤ 0; admin **Complete checkout** from `awaiting_resident_details` when electricity settled; approve writes deductions + marks `completed` directly; `scripts/audit-harish-checkout.ts` |
+
+---
+
 
 | | |
 |---|---|
@@ -36,6 +46,17 @@
 | **Symptom** | Sidebar items (Operations, KYC, PGs, Checkout Settlements, Residents, etc.) often ignored first click; navigation felt delayed |
 | **Root cause** | `AdminLiveRefreshProvider` called `router.refresh()` every 30s, re-executing the dynamic admin layout (`requireAdminSession` + badge load) and racing client `Link` navigations |
 | **Fix** | Removed periodic `router.refresh()` (badge poll remains client-side); `AdminNavLink` with prefetch + optimistic active state; nav timing logs warn when click→route or click→visible exceeds 200ms; sidebar `z-20` stacking |
+
+---
+
+### UPLOAD-CAP-01 — Mobile upload shows camera only (no gallery / screenshots)
+
+| | |
+|---|---|
+| **Severity** | Critical |
+| **Symptom** | On Android/iPhone, photo upload flows showed only **Camera** — no Photo Gallery, Photos Library, Screenshots, or Files |
+| **Root cause** | `capture="environment"` on `<input type="file">` in checkout and deposit-refund flows; 12+ pages each had their own file input with no shared enforcement; KYC was fixed separately so regressions reappeared on other pages after deploys |
+| **Fix** | `ImageFileInput` + `fileInputPolicy.ts` (never sets `capture`); migrated KYC, checkout proof, UPI proof, deposit meter, admin QR/meter/gallery uploads; `scripts/lint-image-uploads.ts` + `tests/unit/fileInputPolicy.test.ts` scan `app/` + `src/` on every `npm test` |
 
 ---
 
@@ -255,10 +276,11 @@
 
 | | |
 |---|---|
-| **Status** | Expected — not a bug |
-| **Situation** | Move-out notice filed; Operations shows "Approve move-out notice" |
-| **Cause** | Admin clicked Continue before `d4c01c6` fix — vacating page crashed, approval never completed |
-| **Action** | After deploy: `/admin/vacating` → Continue → confirm approve |
+| **Status** | Expected — resident submitted; admin must approve at `/admin/vacating` |
+| **Situation** | Move-out notice filed for Room 204 B2, Shanti Nagar; resident sees pending status; admin reports empty queue |
+| **Cause** | (1) Admin searched **Checkout settlements** (post-approval only) instead of **Move-outs**. (2) `syncVacatingAlerts` used INNER JOIN on `bed_reservations` — dropped action items when bed link missing. (3) `/admin/vacating` did not run `syncActionItems` on load. (4) Wrong filter tab (e.g. Waiting Resident) hides pending notices |
+| **Action** | `/admin/vacating` → **Awaiting approval** section → Approve move-out. Run `npx tsx scripts/investigate-atif-204-b2.ts` on production DB for IDs |
+| **Fix** | `syncVacatingAlerts` LEFT JOIN LATERAL; pinned pending section; action sync on vacating page load |
 
 ---
 
@@ -277,7 +299,7 @@
 | Area | Limitation |
 |------|------------|
 | **Half-open ranges** | Vacating date stored as inclusive move-out day but `stay_range` upper bound is exclusive — document carefully when debugging days |
-| **Single vacating request** | UNIQUE on `booking_id` — must complete/reject before new notice |
+| **Single active vacating request** | Partial unique on `booking_id` for `pending`/`approved` only — rejected/completed history does not block a new notice |
 | **Resident list cap** | 200 residents in admin list query |
 | **Manual UPI** | Proof approval required — no auto-reconciliation with bank statements |
 | **Electricity at checkout** | Final bill amount unknown until meter reading or average — placeholder shown before generation ([[WORKFLOWS#Billing]]) |

@@ -193,3 +193,45 @@ Cross-links: [[ARCHITECTURE]] · [[WORKFLOWS]] · [[AI_CONTEXT]] · [[BUGS]]
 
 <!-- DOC_SYNC_TOUCH_2026-06-21 -->
 > **2026-06-21 18:33:10 UTC** — Code changed in: Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-23 -->
+> **2026-06-23 12:41:05 UTC** — Code changed in: Routes, Database, Billing, Residents, Vacating, Action Center. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-24 -->
+> **2026-06-24 09:00:17 UTC** — Code changed in: Routes, Bed Assignment, Residents. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-26 -->
+> **2026-06-26 07:02:31 UTC** — Code changed in: Routes, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-27 -->
+> **2026-06-27 08:37:59 UTC** — Code changed in: Vacating, Action Center, Residents. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-29 -->
+> **2026-06-29 08:55:28 UTC** — Code changed in: Routes, Billing, Vacating, Action Center. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-06-30 -->
+> **2026-06-30 10:04:16 UTC** — Code changed in: Routes, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-01 -->
+> **2026-07-01 09:00:24 UTC** — Code changed in: Database, Billing, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-02 -->
+> **2026-07-02 10:51:15 UTC** — Code changed in: Routes, Bed Assignment. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-03 -->
+> **2026-07-03 09:56:20 UTC** — Code changed in: Vacating, Residents. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-04 -->
+> **2026-07-04 10:39:29 UTC** — Code changed in: Database, Billing, Bed Assignment, Vacating, Action Center. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-05 -->
+> **2026-07-05 10:29:21 UTC** — Code changed in: Routes, Database, Billing, Bookings, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-06 -->
+> **2026-07-06 16:23:12 UTC** — Code changed in: Routes, Database, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-07 -->
+> **2026-07-07 10:28:44 UTC** — Code changed in: Bookings, Bed Assignment. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-10 -->
+> **2026-07-10 09:24:52 UTC** — Code changed in: Bed Assignment, Bookings. Manual review recommended.
