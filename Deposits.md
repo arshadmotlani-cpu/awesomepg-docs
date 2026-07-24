@@ -10,7 +10,11 @@ Cross-links: [[START_HERE]] · [[features#Deposits]] · [[WORKFLOWS#Deposit Coll
 
 Track **security deposits** per booking: required amount, collection at checkout or offline, partial collection, vacating notice deductions, and final refund via checkout settlement. The deposit wallet is auditable through `deposit_ledger` entries.
 
-**SSOT:** `deposits.ts`, `depositOperations.ts`, `getDepositSummaryForBooking()`
+**SSOT:** `deposits.ts`, `depositOperations.ts`, `getDepositSummaryForBooking()`, `getBookingMoneyBalances()`, `applyAdminPaymentAllocation()`
+
+### Manual allocation (admin)
+
+At Operations payment review, admin sets **confirmed received**, **rent allocated**, and **deposit allocated** independently. Resident sees normal Required / Received / Outstanding; allocation is admin-only. Audit trail: `payment_approval_allocations`, `pg_payment_records.confirmed_amount_paise`, `deposit_ledger`.
 
 ---
 
@@ -19,7 +23,7 @@ Track **security deposits** per booking: required amount, collection at checkout
 - [[Deposits]] admin — `/admin/deposits`, `/admin/deposits/[bookingId]`
 - Deposit at public booking checkout
 - Offline collection — `/admin/deposits/add`
-- Vacating penalty deduction (5-day rent) snapshotted on notice
+- Vacating notice deduction (missing days × daily rent) snapshotted on notice
 - Refund via [[Checkout Settlements]]
 - Express collection on [[Residents]] profile
 
@@ -61,7 +65,9 @@ See [[ROUTES#Deposits & checkout]]
 | `deposit_ledger` | collected, deducted, refunded entries |
 | `vacating_requests` | Penalty amount snapshot |
 | `checkout_settlements` | Final refund amount and status |
-| `payments` | Razorpay deposit capture |
+| `bookings.rent_received_paise` | First-month rent collected (synced from paid invoices) |
+| `pg_payment_records.confirmed_amount_paise` | Admin-confirmed received at approval |
+| `payment_approval_allocations` | Rent/deposit split audit at approve time |
 
 See [[DATABASE#Deposits — Deposits]]
 
@@ -69,7 +75,7 @@ See [[DATABASE#Deposits — Deposits]]
 
 ## Related decisions
 
-- [[DECISIONS#Vacating: 14-day notice + fixed 5-day penalty]]
+- [[DECISIONS#Vacating: 14-day notice + pro-rata missing-days deduction]]
 - [[DECISIONS#Split vacate request from deposit refund]]
 - [[DECISIONS#Checkout settlements as refund SSOT]]
 - [[DECISIONS#Pricing snapshot immutability]]

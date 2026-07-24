@@ -81,6 +81,8 @@ flowchart LR
 3. Ledger entries in `deposit_ledger` (collected, deducted, refunded).
 4. `getDepositSummaryForBooking` → refundable balance.
 5. Partial collection tracked via `deposit_due_paise` / `deposit_collection_status`.
+6. **Admin allocation** — Operations payment review: admin sets confirmed received + rent/deposit split (`applyAdminPaymentAllocation`); balances via `getBookingMoneyBalances()`.
+7. **Checkout** — refund = collected deposit − notice − electricity − outstanding rent − damage; `deposit_due_paise` zeroed when checkout settlement opens.
 
 ---
 
@@ -90,7 +92,7 @@ flowchart LR
 flowchart TD
   A[Resident submits notice] --> B{Notice >= 14 days?}
   B -->|Yes| C[No penalty]
-  B -->|No| D[5-day rent deduction snapshotted]
+  B -->|No| D[missing-days rent deduction snapshotted]
   C --> E[syncVacatingCheckoutRentBilling]
   D --> E
   E --> F[Admin approves notice]
@@ -226,3 +228,15 @@ flowchart TD
 
 <!-- DOC_SYNC_TOUCH_2026-07-11 -->
 > **2026-07-11 06:40:31 UTC** — Code changed in: Bed Assignment. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-21 -->
+> **2026-07-21 08:32:20 UTC** — Code changed in: Routes, Bed Assignment, Bookings, Residents, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-22 -->
+> **2026-07-22 04:46:18 UTC** — Code changed in: Routes, Database, Billing, Bookings. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-23 -->
+> **2026-07-23 07:13:33 UTC** — Code changed in: Database, Vacating, Bookings. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-24 -->
+> **2026-07-24 04:40:42 UTC** — Code changed in: Routes, Database, Vacating, Bookings. Manual review recommended.

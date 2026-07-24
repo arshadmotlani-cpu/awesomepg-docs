@@ -7,9 +7,19 @@
 
 ---
 
+## 2026-07-24
+
+- **BILLING-PHASE0-VALIDATION** — Added `BILLING_SETTLEMENT_BUSINESS_RULES.md`, `BILLING_ENGINE_INVARIANTS.md`, prod matrix script + `docs/validation/ACTIVE_MOVEOUT_PHASE0_MATRIX.md`, `PHASE0_VERDICT.md` (8/8 active move-outs pass automatable INV-*); cross-links in `BILLING_COVERAGE_MODEL.md`; Phase 1 proposal = unified validator only (no prod failure signatures)
+
 ## 2026-07-11
 
+- **CAPITAL-PARTNERSHIP-MODEL** — Net Vehicle Cost funding gate; Sufii Settings cut + Investor Pool by stake; sale price/date only; dealEconomics SSOT; migration `0008`; Business/My View + My Investment KPI
+- **CAPITAL-MULTI-INVESTOR** — Per-vehicle funding table `ac_asset_investors` (Me + Investor 2/3); funding must equal purchase price; profit proportional to capital; My ROI = my profit ÷ my invested
+- **CAPITAL-DUAL-VIEW** — Overview My/Business toggle switches all KPIs + charts to my share vs gross business datasets; removed WC/Free Cash/Purchase Volume/Initial Capital cards
+- **CAPITAL-POOL-MODEL** — Working Capital = Initial + My Profit; Free Cash = WC − Current Investment − Capital in Transit; Lifetime Purchase Volume never used for cash; returned capital is not new wealth
+- **CAPITAL-ROI-AUDIT** — Canonical Business ROI = gross÷purchase volume; Personal ROI = my profit÷capital invested; clamp when partner share > 0; wired through overview, analytics, reports, vehicle recalc, sale/manual profit
 - **CAPITAL-OS-OVERVIEW** — Investment OS Overview dashboard + manual profits (`ac_manual_profits`, ledger `manual_profit`); Neon migration applied; screenshots in `.invoice-pdf-samples/dashboard-screenshots/`
+- **CAPITAL-OS-DEPLOY** — Production deploy `6a9ec49` Ready on invest; 19/19 live checks (login, Overview, manual profit→ledger, assets/expenses/payments/reports/capital, health)
 - **OPS-BA-02** — Sidebar Operations/Overview badges now equal `unifiedOperationsQueue.totalCount` (same SSOT as Operations page); no residents parallel queue
 - **OPS-BA-01** — Booking Approval no longer lists approved/Reserved bed reserves; open href SSOT is `/admin/bookings/:id` (`src/lib/operations/bookingApprovalQueue.ts`)
 
@@ -178,5 +188,75 @@ Files:
 - PROJECT/features.md
 - SYSTEM/WORKFLOWS.md
 - automotive-capital/FEATURES.md
+
+---
+
+- 2026-07-11: Capital asset create form field redesign (fuel/ownership; drop reg/VIN/expected sale from form)
+
+- 2026-07-11: Capital Overview redesigned as personal Investment OS (portfolio KPIs + chart/KPI pairing + month cursor)
+
+- 2026-07-11: Capital profit-sharing system (gross vs partner vs my share; dual ROI)
+
+## 2026-07-21
+
+- **BILLING-ENGINE** — Implemented approved billing engine plan: `docs/BILLING_ENGINE.md` (design lock); Billing Command Centre (health tiles, upcoming 14-day rent schedule, diagnostics tab); anniversary-only rent UI (removed bulk Generate Rent Bills; super-admin backfill only); late fee SSOT via `invoice.due_date`; auto-retry failed generations (max 3); `MeterTimelineService` + baseline advance on monthly finalize; `resident_credit_ledger` + escrow/credit separation in checkout; billing health score 0–100; migration `0116_billing_engine.sql`
+- **NOTICE-SETTLEMENT-PREPAID** — Notice deduction uses unused prepaid rent days after vacate (billing-cycle paid-until) to satisfy notice shortfall before deposit charge; `NoticeSettlementPanel` UI replaces charge-window model; 1321 tests green
+- **PARTIAL-DEPOSIT-ALLOCATION** — Admin-controlled rent/deposit allocation SSOT (`getBookingMoneyBalances`, `applyAdminPaymentAllocation`); migration `0117_partial_deposit_allocation`; `PaymentAllocationDialog` + `approveQrPaymentWithAllocationAction`; checkout outstanding rent deduction; sync script `scripts/sync-booking-money-balances.ts`; docs DECISIONS/Deposits/WORKFLOWS updated
+- **FINANCIAL-PHASE-1** — Finalized payment allocation engine: rent/deposit/electricity/other splits, mandatory admin allocation for booking checkout proofs, overpayment dispositions (deposit/rent/electricity/advance credit/refund later), migration `0118`, 1309 tests green
+- **DECISION** — Operations is action-only for move-out: pending notice → Move-out queue; approved waiting period → pipeline/history only; resident checkout submit → Refund/Checkout queue (`moveOutRequiresAdminActionNow` SSOT in `src/lib/operations/moveOutAdminAction.ts`)
+- **VACATING-FINAL-PERIOD-RENT** — Approved move-out suppresses pending final anniversary invoice when vacate is mid unpaid period; tail rent in settlement V2; SSOT `vacatingFinalPeriodRent.ts`; docs `BILLING_ENGINE.md` + MEMORY/decisions
+- **KRISHNA-POST-APPROVE-E2E** — Extended `verify-resident-moveout-dashboard.ts` (10 checks) + `run-krishna-post-approve-e2e.sh`; Krishna APG-2026-0048 pending — run gate after admin approve
+- **MOVE-OUT-WORKFLOW-PIPELINE** — Five-stage SSOT (`moveOutWorkflowStages.ts`); `/admin/vacating` stage filters/sections; Operations Move-out tab shows action-only pipeline; checkout ops unified under `vacating_requests`; settlement review notification title includes “Action required”
+- **MOVE-OUT-WORKFLOW-LOCK** — Immediate notification archive on vacating approve/reject and checkout review resolve; financial workspace uses workflow SSOT; bidirectional booking↔vacating links; resident copy lock; no duplicate approve on financial page
+- **SETTLEMENT-PREVIEW-SSOT** — P0: pending approval estimates include projected tail rent (`treatAsApprovedForTail`); `computeVacatingSettlementPreview.ts` SSOT; approval preview legacy refund fields sync from V2 waterfall; pipeline refund aligned when async preview loaded
+- **BILLING-COVERAGE-MODEL** — SSOT `billingCoverageModel.ts` + `loadBillingCoverageModel`; paid invoice periods clamped to move-in; separate prepaid-after-vacate, days paid for settlement, tail/suppression; all move-out money surfaces migrated
+- **BILLING-COVERAGE-CLEANUP** — `loadVacatingBillingPresentation`; legacy JSON notice display removed from product UI; tail Case B one-day rule; `docs/BILLING_COVERAGE_MODEL.md`; regression tests A–E
+- **OPS-MOVEOUT-REVIEW-GATE** — Operations Move-out tab loads `loadPendingVacatingApprovalPreviews`; list CTA **Review move-out**; **Approve move-out** only inside settlement dialog when BCM statement present; bed map links to Operations instead of bare approve
+- **SETTLEMENT-UI-DAYS-PAID** — Removed internal “Days paid” row from Billing & dates on move-out review/statement surfaces; rent bucket + paid until remain for approval decisions
+- **SETTLEMENT-EXPLAINABILITY** — `moveOutSettlementExplanation.ts` + prod audit script; “Why these numbers” on settlement statement; approval preview attaches explanations
+
+<!-- SEMANTIC_2026-07-24T11:35:38Z -->
+---
+Time: 2026-07-24T11:35:38Z
+Type: MIXED
+Impact: HIGH
+Reason: Move-out and checkout documentation is evolving — likely reflecting vacating ops or refund workflow changes.
+Files:
+- ARCHITECTURE.md
+- AWESOME_PG_MASTER_DOCUMENTATION.md
+- BILLING_COVERAGE_MODEL.md
+- BILLING_ENGINE.md
+- BILLING_ENGINE_INVARIANTS.md
+- BILLING_SETTLEMENT_BUSINESS_RULES.md
+- Billing.md
+- CHANGELOG.md
+- CURRENT_STATE.md
+- DATABASE.md
+- DECISIONS.md
+- Deposits.md
+- FINANCIAL_RECEIVED_AMOUNT_ARCHITECTURE.md
+- HANDOVER.md
+- MASTER_TEST_MATRIX.md
+- MEMORY/active_memory.md
+- MEMORY/changelog.md
+- MEMORY/decisions.md
+- MEMORY/tasks.md
+- NOTICE_DEDUCTION_MIGRATION.md
+- NOTICE_DEDUCTION_MIGRATION_REPORT.md
+- PROJECT/features.md
+- ROUTES.md
+- START_HERE.md
+- SYSTEM/AI_CONTEXT.md
+- SYSTEM/CURRENT_STATE.md
+- SYSTEM/WORKFLOWS.md
+- SYSTEM_TRUTH_MAP.md
+- Vacating.md
+- automotive-capital/DATABASE.md
+- automotive-capital/DECISIONS.md
+- automotive-capital/FEATURES.md
+- automotive-capital/TASKS.md
+- automotive-capital/WORKFLOWS.md
+- validation/ACTIVE_MOVEOUT_PHASE0_MATRIX.md
+- validation/PHASE0_VERDICT.md
 
 ---

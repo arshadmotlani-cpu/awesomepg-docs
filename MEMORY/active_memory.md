@@ -7,7 +7,15 @@
 
 ## Current Focus
 
-- **Automotive Capital Investment OS Overview** — Premium executive dashboard (KPIs, interactive charts, manual profit, insights, range filters) implemented; migration `0003_manual_profits` applied on Neon invest DB. Awaiting commit/deploy to production invest host.
+- **Automotive Capital partnership profit model** — Sufii operating-partner cut (Settings, default 50%) + Investor Pool by stake; funding always = Net Vehicle Cost; sale auto-calcs only. Migration `0008_deal_economics`.
+
+- **Automotive Capital multi-investor model** — Each vehicle has Layer 1 (business: purchase/sale/expenses) + Layer 2 (`ac_asset_investors`: Me / Investor 2 / Investor 3). My ROI uses my stake only. Migration `0006` applied on invest Neon.
+
+- **Automotive Capital My vs Business dashboard** — Toggle switches full KPI + chart datasets (My share vs Business gross). Removed Working Capital / Free Cash / Lifetime Purchase Volume / Initial Capital from Overview.
+
+- **Automotive Capital new-asset form** — Shipped (`cd61a3c`); production `/assets/new` verified. Migration `0004` applied on invest Neon.
+
+- **Automotive Capital Investment OS Overview** — Shipped to production (`6a9ec49`); invest Overview + manual profits verified live (19/19 checks). Neon migration already applied.
 
 - **Automotive Capital host routing** — Root cause: Capital code was never on `main`; production git deploys served Awesome PG on invest. Fix: commit Capital + harden host/`x-forwarded-host` allowlist middleware.
 
@@ -25,7 +33,7 @@
 
 ## Current Blockers
 
-- **Automotive Capital Overview** — Code ready locally; not yet committed/deployed to production invest (user must approve commit/push)
+- **Automotive Capital Overview** — Deployed and verified on invest production
 
 - **Occupancy SSOT** — 6 independent compute paths; Phase 0 (`bedOccupancyEngine.ts` + parity tests) awaiting architecture approval
 - None for vault sync (GitHub push working via SSH)
@@ -103,13 +111,14 @@ See [[tasks]] for full task log. Current:
 <!-- SEMANTIC_STATE_START -->
 ## Semantic State
 
-> **Last analyzed:** 2026-07-11T06:49:12Z
+> **Last analyzed:** 2026-07-24T11:35:38Z
 
-- **Current system intent:** The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
+- **Current system intent:** Move-out and checkout documentation is evolving — likely reflecting vacating ops or refund workflow changes.
 - **Dominant change type:** MIXED (see changelog)
-- **System momentum:** LOW (1 vault commits in 24h)
+- **System momentum:** LOW (0 vault commits in 24h)
 - **Risk level:** LOW
 
 <!-- SEMANTIC_STATE_END -->
+
 
 

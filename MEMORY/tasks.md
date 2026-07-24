@@ -10,10 +10,12 @@
 
 ## 2026-07-11
 
+- [x] **CAPITAL-POOL-01** — Replace Cash Available with Working Capital / Free Cash / Current Investment (rotating pool; no capital double-count)
+- [x] **CAPITAL-ROI-01** — Audit/fix Business vs Personal ROI formulas (gross÷purchase volume; my profit÷capital invested; clamp Personal ≤ Business when partner share > 0); unit tests for 20%/10% example
 - [x] **OPS-BA-02** — Align sidebar/Overview badges with unified Operations queue totalCount
 - [x] **OPS-BA-01** — Fix Booking Approval queue retaining Reserved bookings + broken `/booking/:code` View reservation link
 - [x] **CAPITAL-OS-01** — Redesign Overview into Investment OS (KPIs, charts, manual profit, insights, range filters); migration `0003_manual_profits` applied on Neon
-- [ ] **CAPITAL-OS-02** — Commit + deploy Investment OS Overview to production invest host
+- [x] **CAPITAL-OS-02** — Commit + deploy Investment OS Overview to production invest host (`6a9ec49`, verified)
 
 ## 2026-07-10 — Automotive Capital
 
@@ -134,3 +136,13 @@
 - [ ] Confirm `dig +short invest.awesomepg.in` returns `76.76.21.21`
 - [ ] Open https://invest.awesomepg.in/login and sign in with seeded admin
 - [ ] Optional: point www/apex A records to Vercel `76.76.21.21` if public www still serves lander HTML
+
+## TASK — Capital asset form fields (2026-07-11)
+- Update `/assets/new` CreateAssetForm: Manufacturer searchable, Model, Fuel, Year, Ownership (1–3), Purchase Date default today, Purchase Price; remove Registration/VIN/Expected Sale/Variant.
+- Migration 0004 + deploy + verify invest production.
+
+## TASK — Capital Overview Investment OS redesign (2026-07-11)
+- Redesign `/dashboard` as personal portfolio OS: hero KPIs, 65/35 chart+KPI rows, month nav, portfolio summary, period section; remove best/worst and misleading total capital invested.
+
+## FEATURE — Profit sharing (2026-07-11)
+- Per-deal partner vs investor split on sale + manual profit (percentage or fixed). Dashboard shows Gross Business Profit vs My Lifetime Profit; Business ROI vs My ROI. Charts toggle Business / My.

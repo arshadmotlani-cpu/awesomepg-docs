@@ -43,15 +43,15 @@ Cross-links: [[ARCHITECTURE]] · [[WORKFLOWS]] · [[AI_CONTEXT]] · [[BUGS]]
 
 ---
 
-## Vacating: 14-day notice + fixed 5-day penalty
+## Vacating: 14-day notice + pro-rata missing-days deduction
 
 | | |
 |---|---|
-| **Date** | Phase 5.5 |
-| **Decision** | ≥14 days notice → no deposit deduction. &lt;14 days → deduct exactly **5 days rent** (monthly/30 × 5), not proportional shortfall |
-| **Reason** | Business policy — predictable, fair, auditable |
-| **Impact** | Snapshotted on `vacating_requests` at submit; never recalculate from live rates |
-| **See** | [[WORKFLOWS#Vacating]], `billing.vacatingPenalty()` |
+| **Date** | Phase 5.5; **updated 2026-07-21** |
+| **Decision** | ≥14 calendar days notice → no deposit deduction. &lt;14 days → deduct **chargeableNoticeDays × dailyRent**, where unused **prepaid rent days after the vacating date** (through paid-until on the billing cycle) satisfy missing notice first; `chargeableNoticeDays = max(0, missingNoticeDays − min(missing, unusedPrepaid))`. |
+| **Reason** | Business policy — prepaid rent credit on the billing cycle offsets short notice before deposit is charged (not the same as outstanding rent) |
+| **Impact** | Snapshotted on `vacating_requests` at submit (`notice_rent_covered_days`, `notice_chargeable_days`, optional `notice_breakdown_json`); active rows migrated via `scripts/migrate-notice-deduction-policy.ts` |
+| **See** | [[WORKFLOWS#Vacating]], `noticeDeductionEngine.ts`, `noticeDeduction.ts` |
 
 ---
 
@@ -238,3 +238,24 @@ Cross-links: [[ARCHITECTURE]] · [[WORKFLOWS]] · [[AI_CONTEXT]] · [[BUGS]]
 
 <!-- DOC_SYNC_TOUCH_2026-07-11 -->
 > **2026-07-11 06:40:31 UTC** — Code changed in: Bed Assignment. Manual review recommended.
+
+## Manual payment allocation + partial deposit SSOT
+
+| | |
+|---|---|
+| **Date** | 2026-07-21 |
+| **Decision** | Admin fully controls rent vs deposit allocation on booking payment approval; resident `amount_paise` stays immutable; admin sets `confirmed_amount_paise` |
+| **Reason** | Partial deposit collection (e.g. ₹6,180 → rent ₹4,120 + deposit ₹2,060) requires independent allocation, not auto rent-first split |
+| **Impact** | `getBookingMoneyBalances()` + `applyAdminPaymentAllocation()` are SSOT; Operations payment review uses `PaymentAllocationDialog`; checkout refund deducts outstanding rent from collected deposit |
+| **See** | `bookingMoneyBalances.ts`, `paymentAllocation.ts`, [[Deposits]], migration `0117_partial_deposit_allocation` |
+
+---
+
+<!-- DOC_SYNC_TOUCH_2026-07-21 -->
+> **2026-07-21 08:32:20 UTC** — Code changed in: Routes, Bed Assignment, Bookings, Residents, Vacating. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-23 -->
+> **2026-07-23 07:13:33 UTC** — Code changed in: Database, Vacating, Bookings. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-24 -->
+> **2026-07-24 04:40:42 UTC** — Code changed in: Routes, Database, Vacating, Bookings. Manual review recommended.

@@ -186,7 +186,7 @@ Admin settlement records linked from checkout.
 |-------|-------|
 | `notice_given_date`, `vacating_date` | Notice period |
 | `notice_compliant` | ≥14 days |
-| `deduction_paise` | Snapshotted 5-day penalty if non-compliant |
+| `deduction_paise` | Snapshotted missing-days notice deduction if non-compliant |
 | `monthly_rent_paise_snapshot` | Frozen for penalty calc |
 | `status` | pending → approved → completed / rejected |
 
@@ -382,3 +382,18 @@ Drizzle only runs migrations listed in `src/db/migrations/meta/_journal.json`. F
 
 <!-- DOC_SYNC_TOUCH_2026-07-07 -->
 > **2026-07-07 06:19:57 UTC** — Code changed in: Database, Billing. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-15 -->
+> **2026-07-15 07:05:30 UTC** — Code changed in: Routes, Database. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-21 -->
+> **2026-07-21 14:22:36 UTC** — Code changed in: Routes, Database, Billing, Vacating, Electricity. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-22 -->
+> **2026-07-22 04:46:18 UTC** — Code changed in: Routes, Database, Billing, Bookings. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-23 -->
+> **2026-07-23 07:13:33 UTC** — Code changed in: Database, Vacating, Bookings. Manual review recommended.
+
+<!-- DOC_SYNC_TOUCH_2026-07-24 -->
+> **2026-07-24 04:40:42 UTC** — Code changed in: Routes, Database, Vacating, Bookings. Manual review recommended.

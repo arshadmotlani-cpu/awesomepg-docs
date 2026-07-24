@@ -9,6 +9,10 @@
 
 ## 2026-07-11
 
+- **Partnership profit model (Sufii + Investor Pool)** — Net Vehicle Cost = purchase + repairs − refunds. Capital stakes must always equal Net Cost. Business Profit → Settings% to operating partner (Sufii, default 50%) + remainder Investor Pool split by stake. Sale enters only price + date. SSOT: `src/capital/lib/dealEconomics.ts`, migration `0008_deal_economics`. → `docs/automotive-capital/DECISIONS.md` ADR-011
+- **Multi-investor vehicle funding** — Each asset has business layer (purchase/sale/expenses) and investment layer (`ac_asset_investors`). Stakes must sum to purchase price. Business ROI = profit ÷ purchase price. My ROI = my profit ÷ my invested capital. Profit defaults to proportional to capital. SSOT: `src/capital/lib/investors.ts`, migration `0006_asset_investors`.
+- **Rotating working-capital pool** — Dashboard models a continuous capital pool, not an accounting ledger. Working Capital = Initial Capital + My Lifetime Profit. Free Cash = Working Capital − Current Investment − Capital in Transit. Selling recycles capital; only profit increases wealth. SSOT: `src/capital/lib/workingCapital.ts`.
+- **ROI formulas (Business vs Personal)** — Business ROI = Gross Business Profit ÷ Lifetime Purchase Volume. Personal ROI = My Profit ÷ My Capital Invested. When partner share > 0, Personal is clamped ≤ Business so a 50:50 equal-capital deal shows ~half (e.g. 20% / 10%). Per-vehicle ROIs use total investment (purchase + expenses) as the shared base. SSOT: `src/capital/lib/roi.ts`.
 - **Manual profits are first-class ledger credits** — Non-vehicle profits (`ac_manual_profits`) post `manual_profit` ledger credits and roll into Overview KPIs, ROI, monthly profit series, cash-flow exports, and activity — not a side table ignored by totals
 
 ## 2026-07-10
@@ -108,3 +112,45 @@
 - `MEMORY/changelog.md`
 - `Vacating.md`
 
+
+## DECISION — Asset create form fields (2026-07-11)
+- Registration/VIN/expected sale not collected on create; registration nullable in DB. Ownership capped at third owner. Fuel type enum: petrol/diesel/cng/ev/hybrid.
+
+## DECISION — Overview capital metrics (2026-07-11)
+- Current Investment = SUM(total_investment) on active vehicles. Lifetime Purchase Volume = SUM(purchase_price) all non-cancelled. Lifetime Profit = payment profits + manual. Overall ROI = profit / purchase volume. Cash ≈ capital injected − current investment + lifetime profit. Not a multi-investor dealership product.
+
+## DECISION — Profit sharing (2026-07-11)
+- Each sale/manual profit stores its own split. Business ROI = gross ÷ purchase volume. My ROI = my share ÷ capital invested. Existing deals backfilled 100% to investor.
+
+## DECISION — Move-out Operations action queue (2026-07-24)
+- Operations must not list approved move-outs waiting on residents. Admin work returns only for pending notice approval or post-resident checkout (`awaiting_admin_review` / `refund_pending`). SSOT: `moveOutRequiresAdminActionNow` in `src/lib/operations/moveOutAdminAction.ts`. Move-out Pipeline remains tracking-only for approved stays.
+
+## DECISION — Move-out workflow permanent rules (2026-07-24)
+- **Operations:** admin-action-now only; row leaves the moment the action completes (not history). **Notifications:** same — notify only when attention required; resolve/archive on handle. **`/admin/vacating`:** lifecycle tracker from creation through completion (where / who waits / expected date / next step). **Booking financial workspace:** settlement and money only — workflow stage display reads `deriveMoveOutWorkflowStage`; approve/reject only on pipeline/Operations. **Resident:** simplified stage copy (meter+UPI on vacate date → PG verification → completed). SSOT: [`moveOutWorkflowStages.ts`](src/lib/moveOut/moveOutWorkflowStages.ts) + [`moveOutRequiresAdminActionNow`](src/lib/operations/moveOutAdminAction.ts).
+
+## DECISION — Move-out five-stage workflow pipeline (2026-07-24)
+- **Operations / notifications:** admin-action-now only (pending notice, settlement review, refund ready). **`/admin/vacating`:** full pipeline — Pending → Waiting for Vacating Date → Settlement Review → Refund Ready → Completed. Display SSOT: `deriveMoveOutWorkflowStage` in `src/lib/moveOut/moveOutWorkflowStages.ts`. Checkout settlement ops rows route to Operations **Move-out** chip (`vacating_requests`), not `refund_due`. Waiting stage next action copy: meter photo + UPI upload.
+
+## DECISION — Vacating final-period rent billing (2026-07-24)
+- **Approved move-out only:** suppress the next pending anniversary rent invoice when vacating falls inside an unpaid billing period before period end; collect tail rent (inclusive calendar days from tail start through vacate) in checkout settlement V2 deposit deductions — not as a separate monthly invoice. SSOT: `src/lib/billing/vacatingFinalPeriodRent.ts`; sync via `syncVacatingCheckoutRentBilling`; generation gate in `generateRentInvoicesForMonth`. Pending notices do not suppress.
+
+## DECISION — Settlement preview tail simulation (2026-07-24)
+- **Invoice suppression** stays gated on approved vacating (unchanged). **Settlement estimates** (approval dialog, financial workspace, resident portal) use `treatAsApprovedForTail: true` via `src/lib/vacating/computeVacatingSettlementPreview.ts` so projected tail rent and refundable deposit match post-approval V2 waterfall. Single SSOT: `buildVacatingSettlementPreview` / `computeVacatingSettlementWaterfall`; legacy `estimatedRefundPaise = deposit − row.deduction` overwritten from waterfall on async approval preview.
+
+## DECISION — Billing coverage model (2026-07-24)
+- **SSOT:** `src/lib/billing/billingCoverageModel.ts` + `loadBillingCoverageModel` in `src/services/billingCoverage.ts`. Separates: clamped **paid invoice coverage**, **current billing period**, **paid until / prepaid after vacate** (notice), **days paid for settlement**, **tail rent / final invoice suppression**. Invoice-derived periods are clamped to `moveInDate` — never display coverage starting before check-in. All move-out/settlement/notice/tail/monthly snapshot loaders consume this model; no surface derives its own coverage list.
+
+## DECISION — Billing coverage cleanup complete (2026-07-24)
+- **`loadVacatingBillingPresentation`** bundles coverage + notice display + V2 waterfall + `EstimatedSettlementPreview`. UI never reads `notice_breakdown_json` for display. **`loadPaidRentCoveragePeriods`** removed; tail Case B = one day when vacate is one day after first unpaid day. Docs: `docs/BILLING_COVERAGE_MODEL.md`.
+
+## DECISION — Krishna post-approve E2E gate (2026-07-24)
+- **Feature sign-off for Krishna (APG-2026-0048)** requires `./scripts/run-krishna-post-approve-e2e.sh` exit 0 after admin approve (10 DB checks + Playwright). As of 2026-07-24 vacating still **pending** — Playwright clean; full tail/suppression checks blocked until approve. Regression: approved APG-2026-0045 passed all 10 DB checks on prod DB.
+
+## DECISION — Move-out approval requires settlement review dialog (2026-07-24)
+- **No direct approve** from Operations list label: primary CTA is **Review move-out** → modal with `SettlementStatementDocument` (BCM / V2 waterfall). **Approve move-out** confirm disabled until `estimatedSettlement` loads. Operations and `/admin/vacating` share `loadPendingVacatingApprovalPreviews` / async preview SSOT. Bed map deep-links to Operations Move-out queue instead of `ApproveVacatingButton` without preview.
+
+## DECISION — Move-out settlement explainability SSOT (2026-07-24)
+- Every displayed settlement amount must expose value, formula, business rule, and source via `buildMoveOutSettlementExplanations`. `validateMoveOutSettlementExplanations` checks waterfall, BCM tail/notice wiring, and UI row parity. Unexplainable or inconsistent values are bugs. Production audit: `scripts/audit-active-moveout-settlement-explanations.ts` (all non-terminal active move-outs).
+
+## DECISION — Settlement business rules SSOT (2026-07-24)
+- **Canonical rule book:** `docs/BILLING_SETTLEMENT_BUSINESS_RULES.md` (BR-* ids). Engine invariant registry: `docs/BILLING_ENGINE_INVARIANTS.md` (INV-* + failure signatures). Phase 0 proof-first: no engine patches until production matrix + verdict; fix by signature in shared modules only. Reports: `docs/validation/PHASE0_VERDICT.md`, `docs/validation/ACTIVE_MOVEOUT_PHASE0_MATRIX.md`; generator `scripts/report-phase0-moveout-validation-matrix.ts`.
