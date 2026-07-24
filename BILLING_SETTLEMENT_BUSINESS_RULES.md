@@ -28,6 +28,11 @@ Every engine calculation must map to exactly one **BR-*** rule below. Implementa
 | BR-TAIL-NONE | When tail rent does not apply |
 | BR-REFUND | Total refund composition |
 | BR-FIXED-STAY | Notice and monthly tail rules off |
+| BR-ELECTRICITY | Electricity deducted from deposit at checkout |
+| BR-DAMAGE | Damage charges in checkout other bucket |
+| BR-OTHER | Cleaning/custom checkout deductions |
+| BR-INVOICE-SUPPRESS | Approved move-out suppresses pending anniversary invoice |
+| BR-MONTHLY-STAY | Monthly product: notice + anniversary + room electricity |
 
 ---
 
@@ -189,6 +194,52 @@ Every engine calculation must map to exactly one **BR-*** rule below. Implementa
 **Rule:** When `noticeApplies` is false (fixed-stay duration modes), notice charge and missing-notice days are zero; tail/monthly suppression follows product mode in BILLING_ENGINE.
 
 **SSOT:** V2 `noticeApplies`; [`noticeDeductionPolicy`](../src/lib/checkout/noticeDeductionPolicy.ts).
+
+---
+
+## BR-MONTHLY-STAY — Monthly / open-ended stay
+
+**Rule:** Anniversary rent billing, 14-day (or policy) notice, vacating final-period tail, **Workflow A** room electricity on monthly invoices. Move-out settlement uses V2 + BCM as documented above.
+
+**SSOT:** [`BILLING_ENGINE.md`](./BILLING_ENGINE.md) · [`noticeDeductionPolicy`](../src/lib/checkout/noticeDeductionPolicy.ts).
+
+**Contrast:** Fixed-stay uses **BR-FIXED-STAY** (no notice bucket; checkout-only electricity).
+
+---
+
+## BR-INVOICE-SUPPRESS — Final rent invoice suppression
+
+**Rule:** When an **approved** move-out triggers final-period tail collection, the platform **does not generate** the pending anniversary rent invoice for that period; tail is collected in checkout deposit deductions instead.
+
+**SSOT:** [`syncVacatingCheckoutRentBilling`](../src/lib/billing/vacatingCheckoutBilling.ts) · [`generateRentInvoicesForMonth`](../src/services/billingScheduler.ts) · BCM `finalInvoiceSuppression`.
+
+**Preview:** Estimates use `treatAsApprovedForTail: true` so UI matches post-approval behavior without suppressing live invoices for pending requests.
+
+---
+
+## BR-ELECTRICITY — Electricity at settlement
+
+**Rule:** For checkout settlement, electricity owed is computed from room ledger / checkout electricity model and deducted from **deposit** when amounts are locked (not from unused rent bucket). Monthly residents may also have separate electricity invoices during stay (Workflow A).
+
+**SSOT:** [`electricitySettlement.ts`](../src/lib/checkout/electricitySettlement.ts) · [`checkoutSettlement.ts`](../src/services/checkoutSettlement.ts) → V2 `depositBucket.electricityPaise`.
+
+**Estimate mode:** Electricity may show as pending until meter/finalize — not a numeric bug.
+
+---
+
+## BR-DAMAGE — Damage charges
+
+**Rule:** Admin-entered damage (and related checkout damage lines) roll into V2 `depositBucket.otherPaise` (with cleaning/custom), reducing refundable deposit.
+
+**SSOT:** [`computeCheckoutSettlementV2`](../src/lib/checkout/checkoutSettlementEngineV2.ts) · checkout settlement detail inputs.
+
+---
+
+## BR-OTHER — Other deposit deductions
+
+**Rule:** Cleaning fee, custom charges, and non-notice checkout deductions share the **other** deposit bucket line in V2.
+
+**SSOT:** V2 `depositBucket.otherPaise`.
 
 ---
 

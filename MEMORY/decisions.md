@@ -154,3 +154,6 @@
 
 ## DECISION — Settlement business rules SSOT (2026-07-24)
 - **Canonical rule book:** `docs/BILLING_SETTLEMENT_BUSINESS_RULES.md` (BR-* ids). Engine invariant registry: `docs/BILLING_ENGINE_INVARIANTS.md` (INV-* + failure signatures). Phase 0 proof-first: no engine patches until production matrix + verdict; fix by signature in shared modules only. Reports: `docs/validation/PHASE0_VERDICT.md`, `docs/validation/ACTIVE_MOVEOUT_PHASE0_MATRIX.md`; generator `scripts/report-phase0-moveout-validation-matrix.ts`.
+
+## DECISION — Settlement invalid if any invariant fails (2026-07-24)
+- **SSOT validator:** `src/lib/billing/billingEngineValidation.ts` + `validateBillingEngineSettlement`. All move-out surfaces load `loadVacatingBillingPresentationBundle` with explainability. Production gate: `scripts/validate-active-moveout-billing-engine.ts` (14/14 pass post `alignCoverageToLockedWaterfall`). No resident-specific settlement SQL — `docs/SETTLEMENT_REPAIR_POLICY.md`. Final report: `docs/BILLING_SETTLEMENT_ENGINE_FINAL_REPORT.md`.

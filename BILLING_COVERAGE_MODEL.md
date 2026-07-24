@@ -3,7 +3,7 @@
 **Status:** Permanent architecture for move-out money surfaces.  
 **Code:** [`src/lib/billing/billingCoverageModel.ts`](../src/lib/billing/billingCoverageModel.ts) · **Loader:** [`loadBillingCoverageModel`](../src/services/billingCoverage.ts) · **Presentation bundle:** [`loadVacatingBillingPresentation`](../src/lib/vacating/loadVacatingBillingPresentation.ts)
 
-**Settlement rules & validation:** [BILLING_SETTLEMENT_BUSINESS_RULES.md](./BILLING_SETTLEMENT_BUSINESS_RULES.md) · [BILLING_ENGINE_INVARIANTS.md](./BILLING_ENGINE_INVARIANTS.md) · [Phase 0 verdict](./validation/PHASE0_VERDICT.md)
+**Settlement rules & validation:** [BILLING_SETTLEMENT_BUSINESS_RULES.md](./BILLING_SETTLEMENT_BUSINESS_RULES.md) · [BILLING_ENGINE_INVARIANTS.md](./BILLING_ENGINE_INVARIANTS.md) · [Final engine report](./BILLING_SETTLEMENT_ENGINE_FINAL_REPORT.md)
 
 Do **not** add parallel billing calculators for vacating, notice, tail rent, or settlement display. Extend this model and its loader only.
 
