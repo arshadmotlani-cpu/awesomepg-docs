@@ -697,8 +697,43 @@ These extend `ac_assets` without altering financial tables.
 
 ---
 
-## 10. Backup & Recovery
+---
 
-- Neon point-in-time recovery (production)
-- Ledger rebuild script: recompute cached fields from source tables
-- Migration rollback: forward-only; reversals handle data corrections
+## 11. Three product ledgers (ADR-019)
+
+Money SSOTs — **never** store Vehicle Cost, Seller Payments, and Funding Sources as the same row type. Generic `ac_ledger_entries` remains mutation audit only.
+
+| Ledger | Table | Rollup |
+|--------|-------|--------|
+| Vehicle Cost | `ac_vehicle_costs` (+ `ac_assets.purchase_price_paise`) | TVI (ADR-016) |
+| Seller Payments | `ac_seller_payments` | Remaining to seller |
+| Funding Sources | `ac_funding_entries` | My/Partner Capital, Active Capital, History |
+
+Migration: `0012_three_ledgers.sql`. Helpers: `src/capital/lib/threeLedgers.ts`.
+
+### `ac_funding_entries`
+
+| Column | Notes |
+|--------|-------|
+| `entry_kind` | `inject` \| `deploy` \| `release` \| `transfer` |
+| `party` | `me` \| `partner` \| `lender` |
+| `source_kind` | `bank` \| `cash` \| `loan` \| `partner` \| `sale_proceeds` |
+| `asset_id` | Nullable for pool injects; set on deploy/release |
+| `source_asset_id` | Required conceptually when `source_kind = sale_proceeds` |
+| `amount_paise` | Absolute amount for the kind |
+
+Backfill: one `deploy` per `ac_asset_investors` row; `inject` from `ac_capital_investments`. Seller-payment backfill does **not** create extra deploys (avoids double Active Capital).
+
+### `ac_seller_payments`
+
+| Column | Notes |
+|--------|-------|
+| `instrument` | `ac_payment_mode` (RTGS, cash, cheque, …) — not an activity type |
+| `kind` | `token` \| `purchase` \| `final` |
+| `funding_entry_id` | Required on **new** writes; legacy may be null |
+
+### `ac_vehicle_costs`
+
+Post-purchase cost lines that enter TVI. `cost_type` mirrors investment-cost activity types plus `refund`. Signed `amount_paise`.
+
+`ac_asset_investors` is a **derived** Me/Partner stake view synced from funding deploys — not an independent Funding SSOT.

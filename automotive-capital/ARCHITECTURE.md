@@ -6,9 +6,11 @@ Automotive Capital is a **host-isolated financial operating system** deployed in
 
 Design principle: **Assets first, cars second.** The domain model is built around generic `assets` with type-specific detail tables. Cars are the first `asset_class`. Property, gold, machinery, business investments, and loans extend the same core without schema redesign.
 
-**Financial SSOT (ADR-016):** Total Vehicle Investment = Purchase Price + investment-cost purchase activities − refunds. Token / Purchase Payment / Final Purchase Payment are payment milestones only and must never enter the investment sum. Profit = Sale − TVI. ROI formulas are unchanged; they consume TVI as the vehicle cost base. See `docs/automotive-capital/DECISIONS.md` ADR-016 and `src/capital/lib/activityTypes.ts`.
+**Three money ledgers (ADR-019):** Vehicle Cost (`ac_vehicle_costs` + purchase price) → TVI; Seller Payments (`ac_seller_payments`) → remaining to seller; Funding Sources (`ac_funding_entries`) → My/Partner Capital, Active Capital, Funding History. Never co-store these as one row type. Generic `ac_ledger_entries` is mutation audit only — not the Funding Sources product ledger.
 
-**Lifecycle SSOT (ADR-017):** Every vehicle has one current `ac_asset_status` (dealer labels via `src/capital/lib/vehicleLifecycle.ts`). Purchase activities are history only. Timeline interleaves state changes with activities. Dashboard groups by lifecycle state.
+**Financial SSOT (ADR-016):** Total Vehicle Investment = Purchase Price + investment costs − refunds. Seller payments never enter TVI. Profit = Sale − TVI. See `docs/automotive-capital/DECISIONS.md` ADR-016.
+
+**Lifecycle SSOT (ADR-017):** Every vehicle has one current `ac_asset_status` (dealer labels via `src/capital/lib/vehicleLifecycle.ts`). Timeline may project events; status is current state. Dashboard groups by lifecycle state.
 
 **Profit Distribution SSOT (ADR-018 — FROZEN):** Per-vehicle `SELF` | `PARTNERSHIP_50_50`. Gross / My / Sufii and vehicle ROI originate only from `dealEconomics.ts` + stored columns. No page may recalculate profit. See `docs/automotive-capital/PROFIT_DISTRIBUTION_SSOT.md`.
 
@@ -179,21 +181,21 @@ flowchart TB
 
 Enforce via ESLint `no-restricted-imports` rule.
 
-### 4.2 Ledger as Single Source of Financial Truth
+### 4.2 Three product ledgers + audit ledger
 
-All monetary mutations flow through `LedgerService`:
+**Product SSOTs (ADR-019):**
 
 ```
-CapitalService.create()  ──┐
-ExpenseService.create()  ──┤
-PaymentService.create()  ──┼──► LedgerService.post() ──► ac_ledger_entries
-SettlementService.create() ─┤
-AssetService.recordSale() ─┘
+Vehicle costs  ──► ac_vehicle_costs     ──► TVI (ADR-016)
+Seller payments ──► ac_seller_payments  ──► Remaining to seller
+Funding sources ──► ac_funding_entries  ──► My/Partner Capital, Active Capital, History
+                         ▲
+                         └── seller payment / cost cash must reference funding deploy
 ```
 
-UI "edit" and "delete" operations create **reversal entries**, never `DELETE` from ledger.
+**Audit trail:** every monetary mutation still posts `ac_ledger_entries` via `LedgerService` (reversals, never deletes). Cached aggregates on `ac_assets` are derived and rebuildable.
 
-Cached aggregates on `ac_assets` and portfolio summary tables are **derived** and rebuildable from ledger + detail tables.
+`ac_asset_investors` is a **derived** Me/Partner stake view synced from funding deploys — not an independent write path.
 
 ---
 

@@ -8,6 +8,10 @@
 
 ## Active
 
+## 2026-07-26
+
+- [x] **CAPITAL-THREE-LEDGERS-019** — ADR-019 docs + schema `0012` + funding/seller/cost services + payment UI instrument/source + `/capital` Funding History
+
 ## 2026-07-11
 
 - [x] **CAPITAL-POOL-01** — Replace Cash Available with Working Capital / Free Cash / Current Investment (rotating pool; no capital double-count)
