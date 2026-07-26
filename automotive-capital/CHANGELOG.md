@@ -8,6 +8,13 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed — Purchase Payment vs Activities UX
+- Create form shows live Remaining Purchase Payment (Price − Token); redirect → Overview Purchase Payment
+- Activities form: external costs only — Token / Purchase Payment removed (`selectable: false` + server guard)
+- Dedicated Record Purchase Payment on Overview (caps at remaining; does not change TVI)
+- Refund copy clarifies cash returns are never profit; negative cost activities reduce TVI
+- TVI formula unchanged (ADR-016)
+
 ### Changed — Profit Distribution is sale-time (ADR-018 amendment)
 - Removed Profit Distribution from New Vehicle create form
 - Record Sale requires mode (default: Entire profit is mine / SELF); preview uses selection

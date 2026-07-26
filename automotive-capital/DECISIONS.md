@@ -385,7 +385,9 @@ SSOT: `src/capital/lib/activityTypes.ts` (`computeTotalVehicleInvestment`), wire
 2. Purchase Price + all activities including milestones — double-counts acquisition.
 
 ### Consequences
-- Create vehicle starts TVI at purchase price; post-create lands on Purchase Activities.
+- Create vehicle starts TVI at purchase price; Token is create-time payment progress only.
+- Post-create lands on Overview → Purchase Payment (not Activities).
+- Activities never offer Token / Purchase Payment (`selectable: false` + server guard).
 - Historical assets: re-run `scripts/recalc-capital-assets.ts` after deploy so stored `total_investment_paise` matches ADR-016.
 - Contributors must not change this formula without a documented ADR.
 
