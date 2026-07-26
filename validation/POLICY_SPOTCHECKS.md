@@ -1,6 +1,6 @@
 # Settlement business policy spot-checks
 
-Generated: 2026-07-24T11:54:25.374Z
+Generated: 2026-07-24T12:09:50.752Z
 
 ## APG-2026-0048 — Krishna
 

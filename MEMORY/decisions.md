@@ -7,6 +7,22 @@
 
 ---
 
+## 2026-07-26
+
+- **Profit Distribution is sale-time** — Mode chosen at Record Sale (default SELF); NULL until sold; edit on Sale tab. → ADR-018 amendment + `0011`
+- **Profit Distribution Mode** — Per deal SELF (100% My) or PARTNERSHIP_50_50; Settings Sufii % is manual-profits only. → ADR-018
+- **Vehicle Lifecycle SSOT (state vs activities)** — One current status per vehicle; activities remain history; reuse `ac_asset_status`; Purchase Pending derived; Delivered Phase 2. → ADR-017
+- **Frozen Total Vehicle Investment (Option 2)** — TVI = Purchase Price + investment-cost activities − refunds; Token/Purchase Payment are milestones only. Financial SSOT for profit/ROI/analytics. → ADR-016
+- **Executive dealership dashboard restore** — Grouped cards + Active Capital once + conditional Health + activity + Purchases vs Sales; no Business View; ROI = My Profit ÷ My Capital Stakes. → ADR-015
+- **Single personal dealership dashboard** — No Business View; six KPIs; monthly+cumulative growth chart; personal ROI kept. → ADR-014
+- **Vehicles terminology + partner toggle** — Capital UI says Vehicles (routes `/assets`); Purchased with Partner OFF by default. → `docs/automotive-capital/DECISIONS.md` ADR-013
+
+## 2026-07-25
+
+- **Checkout single-approval state machine** — One settlement decision at `awaiting_admin_review`: pay-now → `completed`; defer payout → `refund_pending` with Operations `refund_due` only (not a second settlement review). SSOT: `docs/SYSTEM/CHECKOUT_SETTLEMENT_STATE_MACHINE.md`, `deferCheckoutRefundPayoutAction`, `moveOutOperationsQueueTarget`.
+- **Checkout vs payout terminology (frozen)** — Checkout = business (complete at finalize, never waits for payout). Payout = accounting after checkout. UI/docs SSOT: `docs/SYSTEM/CHECKOUT_SETTLEMENT_STATE_MACHINE.md` § Terminology Rules; code strings: `src/lib/payout/payoutDisplayTerminology.ts`. Governance: `docs/CHECKOUT_PAYOUT_PLATFORM_FREEZE.md`. Keep `refund_pending` / `refund_due` / `refund_paid` in DB/API unless versioned migration.
+- **Vehicle Investment OS** — Activities timeline SSOT; Net Vehicle Cost from cost-impacting activities (no full purchase ledger on create); funding = Me+Partner = purchase price; repair advance cash-only until settlement. → `docs/automotive-capital/DECISIONS.md` ADR-012
+
 ## 2026-07-11
 
 - **Partnership profit model (Sufii + Investor Pool)** — Net Vehicle Cost = purchase + repairs − refunds. Capital stakes must always equal Net Cost. Business Profit → Settings% to operating partner (Sufii, default 50%) + remainder Investor Pool split by stake. Sale enters only price + date. SSOT: `src/capital/lib/dealEconomics.ts`, migration `0008_deal_economics`. → `docs/automotive-capital/DECISIONS.md` ADR-011
@@ -146,8 +162,11 @@
 ## DECISION — Krishna post-approve E2E gate (2026-07-24)
 - **Feature sign-off for Krishna (APG-2026-0048)** requires `./scripts/run-krishna-post-approve-e2e.sh` exit 0 after admin approve (10 DB checks + Playwright). As of 2026-07-24 vacating still **pending** — Playwright clean; full tail/suppression checks blocked until approve. Regression: approved APG-2026-0045 passed all 10 DB checks on prod DB.
 
+## DECISION — Settlement presentation audiences (2026-07-24)
+- **One screen, one audience.** Same `SettlementStatementDocumentModel`; presentation via `applySettlementPresentationAudience` in `src/lib/vacating/settlementPresentationAudience.ts`. **Resident:** refund + leaving (+ pending checklist); optional plain “what affects refund” only. **Admin review:** `AdminReviewSettlementScan` (refund, leaving, notice status, link to statement) — no full statement scroll in approve modal. **Accountant:** financial workspace + statement page/PDF + checkout audit — full explainability and audit trail. Forbidden in default resident/admin UI: rent consumed, waterfall, BR-* IDs, formulas, engine trace. Guide: `docs/validation/SETTLEMENT_UX_GUIDE.md`.
+
 ## DECISION — Move-out approval requires settlement review dialog (2026-07-24)
-- **No direct approve** from Operations list label: primary CTA is **Review move-out** → modal with `SettlementStatementDocument` (BCM / V2 waterfall). **Approve move-out** confirm disabled until `estimatedSettlement` loads. Operations and `/admin/vacating` share `loadPendingVacatingApprovalPreviews` / async preview SSOT. Bed map deep-links to Operations Move-out queue instead of `ApproveVacatingButton` without preview.
+- **No direct approve** from Operations list label: primary CTA is **Review move-out** → modal with **AdminReviewSettlementScan** (refund, leaving, notice) and link to full statement for accounting. **Approve move-out** confirm disabled until `estimatedSettlement` loads. Operations and `/admin/vacating` share `loadPendingVacatingApprovalPreviews` / async preview SSOT. Bed map deep-links to Operations Move-out queue instead of `ApproveVacatingButton` without preview.
 
 ## DECISION — Move-out settlement explainability SSOT (2026-07-24)
 - Every displayed settlement amount must expose value, formula, business rule, and source via `buildMoveOutSettlementExplanations`. `validateMoveOutSettlementExplanations` checks waterfall, BCM tail/notice wiring, and UI row parity. Unexplainable or inconsistent values are bugs. Production audit: `scripts/audit-active-moveout-settlement-explanations.ts` (all non-terminal active move-outs).
@@ -157,3 +176,11 @@
 
 ## DECISION — Settlement invalid if any invariant fails (2026-07-24)
 - **SSOT validator:** `src/lib/billing/billingEngineValidation.ts` + `validateBillingEngineSettlement`. All move-out surfaces load `loadVacatingBillingPresentationBundle` with explainability. Production gate: `scripts/validate-active-moveout-billing-engine.ts` (14/14 pass post `alignCoverageToLockedWaterfall`). No resident-specific settlement SQL — `docs/SETTLEMENT_REPAIR_POLICY.md`. Final report: `docs/BILLING_SETTLEMENT_ENGINE_FINAL_REPORT.md`.
+
+## DECISION — Settlement engine frozen; UX-only phase (2026-07-24)
+- Billing & Settlement Engine is **feature complete**. Do not change settlement mathematics unless invariant/prod validation fails or a **BR-*** rule changes. Ongoing work: UX tiering (15s resident / 10s admin approve / accountant expandables). Policy: `docs/SETTLEMENT_ENGINE_FREEZE.md`, `docs/validation/SETTLEMENT_UX_GUIDE.md`, Cursor rule `.cursor/rules/settlement-engine-freeze.mdc`.
+
+## DECISION — Move-in checkout rent coverage vs tail (APG-2026-0082, 2026-07-24)
+- **Problem:** First rent invoice due on move-in day maps to a pre-move-in anniversary window; after `clampPaidPeriodToMoveIn` paid coverage can collapse to a single day while checkout collected **full monthly rent**. V2 **rent consumed** funds the full stay; **tail rent** still charged overlapping days from deposit → double charge (0082: ₹0 refund on ₹2,059 deposit).
+- **Rule (BR-MOVEIN-COVERAGE):** When checkout paid **≥ one full month** rent and clamped invoice coverage is only move-in day with raw period ending on move-in, expand paid coverage to the **move-in anniversary period** `[moveIn, periodEnd]` for tail/notice SSOT. Do **not** zero tail globally when `rentConsumed === rentPaid` (Case B still needs tail after paid period ends).
+- **SSOT:** `expandMoveInCheckoutPeriodCoverage` in `billingCoverageModel.ts`; regression Case F in `billingCoverageRegression.test.ts`. Govind Kumar payout: normal settlement after fix, not a code exception.

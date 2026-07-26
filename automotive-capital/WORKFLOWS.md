@@ -84,45 +84,62 @@ sequenceDiagram
 
 ---
 
-## 4. Asset Status State Machine
+## 4. Asset Status State Machine (ADR-017 Lifecycle SSOT)
+
+Dealer labels (not raw enum): Just Purchased · Under Repair · Under Repair (Painting) · Ready For Sale · Listed For Sale · Sold · Settled · Archived (`cancelled`).
+
+**Purchase Pending** is a derived badge (status=`purchased` and payment milestones / funding incomplete) — not a separate enum. **Delivered** is Phase 2.
 
 ```mermaid
 stateDiagram-v2
   [*] --> purchased: Create asset
-  purchased --> repairing: Start repairs
+  purchased --> repairing: Start repairs / first repair advance
+  purchased --> painting: Send for paint
+  purchased --> ready: Skip to ready
   repairing --> painting: Send for paint
-  painting --> ready: Repairs complete
+  repairing --> ready: Repairs complete
+  painting --> repairing: Back to repair
+  painting --> ready: Paint complete
   ready --> listed: List for sale
+  ready --> repairing: More work
+  listed --> ready: Delist
   listed --> sold: Record sale
+  ready --> sold: Record sale
   sold --> settled: Full settlement
 
-  purchased --> cancelled: Cancel
-  repairing --> cancelled: Cancel
-  painting --> cancelled: Cancel
-  ready --> cancelled: Cancel
-  listed --> cancelled: Cancel
+  purchased --> cancelled: Archive
+  repairing --> cancelled: Archive
+  painting --> cancelled: Archive
+  ready --> cancelled: Archive
+  listed --> cancelled: Archive
 
   settled --> [*]
   cancelled --> [*]
 ```
 
+SSOT: `src/capital/lib/vehicleLifecycle.ts` — `allowedTransitions`, `autoStatusOnActivity`, `suggestTransitionOnActivity`, `derivedBadges`.
+
 ### Transition Rules
 
 | From | To | Side effects |
 |------|----|--------------|
-| any → sold | Requires `actual_sale_price` and `sale_date` |
-| sold → settled | Requires settlement record + 100% settlement % |
-| any → cancelled | Requires reason; reversal entries for all financial data |
+| `purchased` / `painting` + first `repair_advance` | auto → `repairing` | Status updated with activity |
+| `repair_settlement` | suggest → `ready` | Dealer confirms — never auto |
+| ready/listed → sold | Requires `actual_sale_price` and `sale_date` via sale workflow |
+| sold → settled | Requires settlement record + capital cleared |
+| active → cancelled | Archive; requires reason |
 
-Invalid transitions return error. No backward transitions except cancel.
+Invalid manual transitions return error. Sale and settle stay dedicated workflows (not status chips). Timeline interleaves `asset_status_changed` / sale / settlement with purchase activities.
 
 ---
 
 ## 5. Expense Flow
 
+> **Superseded for new work by Vehicle Activities (ADR-012).** Use **Add Activity** on the vehicle profile. Net Vehicle Cost = sum of cost-impacting activities. Funding gap vs purchase price.
+
 ### 5.1 Add Expense to Asset
 
-1. From asset detail → Expenses tab → "Add expense"
+1. From asset detail → Expenses tab → "Add expense" *(legacy)*
 2. Fill: date, category, vendor, amount, description, payment method, bill, notes
 3. Submit
 4. System:
@@ -132,6 +149,12 @@ Invalid transitions return error. No backward transitions except cancel.
    - Recalculate asset: `total_expense_paise`, `total_investment_paise`, `profit_paise`, `roi_bps`
    - Add timeline event
    - Log activity
+
+### 5.1b Add Activity (current)
+
+1. Asset → **Add Activity** → type (Token, Purchase Payment, Repair Advance, …)
+2. Cost-impacting types update Net Vehicle Cost; Repair Advance is cash-only until settlement
+3. Funding gap is vs **purchase price**, not net cost
 
 ### 5.2 Expense Impact on Metrics
 
@@ -148,15 +171,15 @@ After:  total_investment = purchase_price + existing_expenses + new_expense
 
 ### 6.1 Record Sale
 
-1. Admin on asset detail → "Record sale"
-2. Enter **sale price + sale date only** (vehicle must be fully funded: stakes = Net Vehicle Cost)
-3. System auto-calculates:
-   - Net Vehicle Cost, Business Profit
-   - Sufii (operating partner) share from Settings ratio (default 50%)
-   - Investor Pool → each capital investor by stake %
-   - Business ROI, My ROI
+1. Admin on asset detail → Sale tab → "Record sale"
+2. Enter **sale price + sale date** and choose **Profit Distribution** (vehicle must be fully funded: stakes = Purchase Price):
+   - Entire profit is mine (`SELF`, default)
+   - Split profit 50% / 50% (`PARTNERSHIP_50_50`)
+3. System stores the mode with the sale and calculates via SSOT:
+   - Gross Deal Profit, My Profit, Sufii Profit, Business ROI, My ROI
    - Update `ac_assets` + `ac_asset_investors`; status → `sold`
 4. Timeline + activity + dashboard KPIs update
+5. After sale, mode can be flipped on the Sale tab; Profit tab shows read-only stats
 
 ### 6.2 Post-Sale
 
@@ -230,13 +253,21 @@ When all money is received:
 
 ### 8.2 Profit Sharing (vehicle sales)
 
+Mode is chosen **at Record Sale** (not at purchase). Uses each deal’s stored **Profit Distribution Mode** (ADR-018):
+
 ```
-operating_partner_share = business_profit × (settings.numerator / settings.denominator)  -- Sufii
-investor_pool = business_profit − operating_partner_share
-each_investor = investor_pool × (invested / total_invested)
+gross_deal_profit = sale − TVI
+
+SELF:
+  my_profit = gross_deal_profit
+  sufii_profit = 0
+
+PARTNERSHIP_50_50:
+  my_profit = round(gross_deal_profit / 2)
+  sufii_profit = gross_deal_profit − my_profit
 ```
 
-Default Settings: 50/50 (numerator=1, denominator=2). Settlement snapshots use stored shares.
+Settings numerator/denominator apply to **manual profits** only. Settlement snapshots use stored shares.
 
 ---
 

@@ -238,7 +238,7 @@ Seed script creates only: settings singleton, expense categories, admin user. No
 ## ADR-011: Partnership Profit Model (Operating Partner + Investor Pool)
 
 **Date:** 2026-07-11  
-**Status:** Accepted
+**Status:** Superseded for vehicle sales by ADR-018 (2026-07-26)
 
 ### Context
 Automotive Capital is an investment partnership, not a traditional dealership. Sufii is the operating partner and does not invest capital by default. Capital investors (Me / Investor 2 / Investor 3) fund Net Vehicle Cost. Profit must never be entered manually on vehicle sale.
@@ -259,6 +259,196 @@ Automotive Capital is an investment partnership, not a traditional dealership. S
 - `partner_share_paise` means Sufii / operating partner, not co-investor residual.
 - Expenses may create a funding gap; Update Investments form rebalances before sale.
 - Payment-type `refund` remains cash-recovery and does not change Net Vehicle Cost.
+- **Superseded:** Vehicle deals now use per-vehicle Profit Distribution Mode (ADR-018). Settings ratio remains for **manual profits** only.
+
+---
+
+## ADR-012: Vehicle Activities Timeline + Cost from Activities
+
+**Date:** 2026-07-25  
+**Status:** Accepted (cost formula superseded by ADR-016)
+
+### Context
+Expense-centric UX and auto-debiting full purchase on create did not match how deals actually unfold (token → payments → repairs with advances). Funding should track purchase price (Me + Partner), while Net Vehicle Cost should accumulate from real cost events.
+
+### Decision
+- Introduce `ac_vehicle_activities` as the vehicle timeline SSOT and primary cost driver.
+- Stop posting full `asset_purchase` ledger debit on create; insert `vehicle_created` only.
+- Funding target = purchase price (Me + Partner); deprecate new `investor_3` writes.
+- Repair advances are cash-only until settlement; settlement actual cost hits vehicle cost.
+- Remove Expenses from Capital nav; activities are vehicle-scoped.
+
+### Consequences
+- Migration `0009_vehicle_activities` backfills activities from purchase price + non-purchase expenses.
+- Legacy `ac_expenses` retained for history; new cost entry via Add Activity.
+- **Note:** ADR-012’s “activities-only, no purchase base” cost sum is replaced by ADR-016 (Purchase Price + investment-cost activities; milestones excluded).
+
+---
+
+## ADR-013: Vehicles Terminology + Partner Toggle UX
+
+**Date:** 2026-07-26  
+**Status:** Accepted
+
+### Context
+Dealership operators think in vehicles and inventory, not accounting “assets”. Most purchases are fully self-funded; always showing partner fields adds noise. Autosaved drafts were restoring prior vehicle data into New Vehicle.
+
+### Decision
+- User-facing module label is **Vehicles** (routes remain `/assets`).
+- **Purchased with Partner** toggle defaults OFF; My Investment = purchase price when off.
+- New Vehicle uses draft key `vehicle-new-v2` and Clear form / post-create draft delete so forms start blank.
+- Profile workspace tabs: Overview, Timeline, Activities, Investment, Photos, Documents, Profit, Sale (+ Accounting).
+
+### Consequences
+- Cover photo shown on inventory list and profile hero via `cover_document_id`.
+- Legacy expense services remain for history; UI path is vehicle Activities only.
+
+---
+
+## ADR-014: Single Personal Dealership Dashboard
+
+**Date:** 2026-07-26  
+**Status:** Accepted
+
+### Context
+The Capital overview mixed Business vs My perspectives, duplicated capital metrics, and used oversized investment-style charts that did not help daily vehicle operations.
+
+### Decision
+- One dashboard only — always personal (`views.mine`); remove Business View UI.
+- Six compact KPIs: Active Vehicles, Vehicles Sold, Lifetime Profit, Monthly/Period Profit, Avg Profit Per Vehicle, ROI.
+- Quick actions: Add Vehicle + Add Manual Profit only.
+- **Personal ROI retained:** `My Lifetime Profit ÷ My Capital Stakes` (via `computePersonalRoiBps` / overview wiring). Not changed this pass.
+- **Candlesticks rejected** for portfolio growth: data is a single monthly profit series, not OHLC. Use **monthly bars + cumulative line** (`ProfitGrowthCombo`) instead.
+- Remove Capital At Risk duplicates, allocation donut, investment waterfall, monthly ROI chart, and activity timeline from the dashboard.
+
+### Consequences
+- Cleaner above-the-fold inventory + profit focus.
+- `views.business` remains in the overview service payload unused (prune later if desired).
+
+---
+
+## ADR-015: Executive Dealership Dashboard Restore
+
+**Date:** 2026-07-26  
+**Status:** Accepted
+
+### Context
+ADR-014’s minimal pass removed useful signals (Active Capital, ops health, activity, purchase/sale volume). The owner dashboard needs density and grouping — not a stripped KPI strip.
+
+### Decision
+- Keep **single personal view** only (`views.mine`). No Business View return.
+- Replace flat KPI tiles with **four grouped cards:** Inventory (In Stock / Sold / Total), **Active Capital** (one amount — my stakes on in-stock vehicles), Profit (lifetime + period), Performance (ROI + avg profit/vehicle).
+- **Active Capital once** — same figure as `capitalAtRiskPaise` / `activeCapitalPaise`; never a second “At Risk” card.
+- **Business Health** only when counts > 0: Under Repair (`repairing`+`painting`), Ready, Listed, Just Purchased, Open Repair Advances. Omit RC / transport / docs / pending payments until workflow SSOTs exist.
+- **Recent Activity** from `ac_activity_log` with human labels; asset entities link to `/assets/{id}`.
+- Charts: keep **Profit Growth** combo (monthly bars + cumulative line); add **Purchases vs Sales** dual bars. Candlesticks remain rejected.
+- **Personal ROI unchanged:** `My Lifetime Profit ÷ My Capital Stakes`.
+
+### Consequences
+- Overview bundle gains `vehicleStatusCounts`, `openRepairAdvancesCount`, `monthlySales`, and `activeCapitalPaise` alias.
+- Dense executive above-the-fold without duplicate capital widgets.
+
+---
+
+## ADR-016: Frozen Total Vehicle Investment (Option 2)
+
+**Date:** 2026-07-26  
+**Status:** Accepted — **Financial SSOT**
+
+### Context
+Treating Token / Purchase Payment as vehicle cost double-counted acquisition when Purchase Price was also the negotiated base. Dealers need a frozen formula for investment, profit, ROI, analytics, and reports.
+
+### Decision
+**Total Vehicle Investment** =
+
+```
+Purchase Price
++ Broker Commission
++ Transportation
++ Repair Costs (settlement actual)
++ Insurance + Fuel + Accessories + RTO + Storage + Washing/Service + Miscellaneous
+− acquisition-related refunds / returns
+```
+
+**Payment milestones** (Token Paid, Purchase Payment, Final Purchase Payment) track progress toward Purchase Price only — `costImpact: cash_only`. They **never** enter TVI.
+
+**Repair Advance** is cash float until settlement; only settlement **actual cost** is investment.
+
+**Profit** = Sale Price − Total Vehicle Investment.
+
+**ROI architecture unchanged** (Business ÷ TVI / Personal ÷ my stake). Future formula changes require a new ADR.
+
+SSOT: `src/capital/lib/activityTypes.ts` (`computeTotalVehicleInvestment`), wired via `recalculateAsset`.
+
+### Alternatives Considered
+1. Activities-only sum (ADR-012) — understated when milestones were reclassified and no purchase base.
+2. Purchase Price + all activities including milestones — double-counts acquisition.
+
+### Consequences
+- Create vehicle starts TVI at purchase price; post-create lands on Purchase Activities.
+- Historical assets: re-run `scripts/recalc-capital-assets.ts` after deploy so stored `total_investment_paise` matches ADR-016.
+- Contributors must not change this formula without a documented ADR.
+
+---
+
+## ADR-017: Vehicle Lifecycle SSOT (State vs Activities)
+
+**Date:** 2026-07-26  
+**Status:** Accepted
+
+### Context
+The product became activity-driven: timelines and dashboards explained events but not “where is this vehicle right now?” Asset status already existed (`ac_asset_status`) but was mostly manual and buried in Sale.
+
+### Decision
+- **State and activities are independent.** Every vehicle has exactly one current lifecycle status. Activities are historical events and never *are* the current state.
+- **Reuse existing enum** — no new DB values this pass. Dealer labels:
+  - `purchased` → Just Purchased
+  - `repairing` / `painting` → Under Repair (Painting keeps enum)
+  - `ready` → Ready For Sale
+  - `listed` → Listed For Sale
+  - `sold` → Sold
+  - `settled` → Settled (finance close)
+  - `cancelled` → Archived
+- **Purchase Pending** is a **derived badge** (purchased + milestones unpaid / funding gap), not an enum. **Delivered** deferred to Phase 2.
+- Enforce `allowedTransitions` in `updateAssetStatus`. Auto: first `repair_advance` → `repairing` only from `purchased`|`painting`. Suggest Ready after repair settlement (dealer confirms). Sale/settle keep dedicated workflows.
+- Timeline interleaves state-change events with purchase activities.
+- Dashboard groups vehicles by lifecycle state first.
+
+SSOT: `src/capital/lib/vehicleLifecycle.ts`
+
+### Consequences
+- Overview shows Lifecycle control; list/detail use friendly labels.
+- Invalid status jumps are rejected.
+- Future enums (`purchase_pending`, `delivered`) require a new ADR.
+
+---
+
+## ADR-018: Profit Distribution Mode (SELF vs PARTNERSHIP_50_50)
+
+**Date:** 2026-07-26  
+**Status:** Accepted (supersedes ADR-011 for vehicle sales)  
+**Amended:** 2026-07-26 — sale-time workflow (not purchase)
+
+### Context
+Not every vehicle is a Sufii partnership. Self deals must give 100% of Gross Deal Profit to Me; Sufii’s earnings on those deals are expenses (broker, transport, repair), not profit share. Applying Settings 50% to every sale produced incorrect My Profit / ROI / dashboard totals. The split is usually unknown at purchase and is decided when the deal closes.
+
+### Decision
+1. `ac_assets.profit_distribution_mode`: `SELF` | `PARTNERSHIP_50_50` | `NULL` (unsold).
+2. **Sale-time property** — not asked at vehicle create. Column stays `NULL` until `recordSale`.
+3. Record Sale requires mode; UI default is **SELF** (most deals are self-funded).
+4. Gross Deal Profit = Sale − TVI (unchanged).
+5. **SELF** → My Profit = Gross; Sufii Profit = 0.
+6. **PARTNERSHIP_50_50** → My Profit = `round(Gross/2)`; Sufii = Gross − My.
+7. Capital investors remain funding / My ROI base only; `investor_2` gets 0 deal profit.
+8. Editable on vehicle **Sale** tab after sale (`profit_distribution_mode_changed`); recalculates via `recalculateAsset`. Profit tab is read-only stats.
+9. One SSOT: `distributeDealProfits` in `dealEconomics.ts`. Settings Sufii % applies to **manual profits** only.
+
+Migrations: `0010_profit_distribution_mode.sql`, `0011_sale_time_profit_distribution.sql`. Recalc: `scripts/capital-recalc-deal-profits.ts`.
+
+### Consequences
+- Dashboard / Reports / Analytics continue to read stored `my_share_paise` — correct after recalc.
+- No page-specific profit formulas.
+- **FROZEN:** Vehicle profit math lives only in `dealEconomics.ts`. Future features must consume stored engine outputs. See [`PROFIT_DISTRIBUTION_SSOT.md`](./PROFIT_DISTRIBUTION_SSOT.md).
 
 ---
 

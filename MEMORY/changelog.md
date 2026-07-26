@@ -7,8 +7,35 @@
 
 ---
 
+## 2026-07-26
+
+- **CAPITAL-SALE-TIME-PROFIT** — Profit Distribution moved off create → Record Sale (default SELF); nullable mode until sold (`0011`); edit on Sale tab
+- **CAPITAL-PROFIT-SSOT-FREEZE** — Hardened dealEconomics gross helper; Scenario A/B tests; PROFIT_DISTRIBUTION_SSOT.md freeze
+- **CAPITAL-PROFIT-MODE** — SELF vs PARTNERSHIP_50_50 per vehicle (ADR-018); SSOT distributeDealProfits; migration 0010
+- **CAPITAL-OPERATING-CONSOLE** — Dashboard = Current Position / Attention / Pace(3) / Insights / Recent Sales (not analytics wall)
+- **CAPITAL-IA-FINAL** — Sidebar = Dashboard/Vehicles/Reports/Settings only; Analytics merged into Dashboard; vehicle cards + lifecycle tabs; Payments on vehicle
+- **CAPITAL-IA-DASHBOARD-ANALYTICS** — *(superseded by CAPITAL-IA-FINAL)*
+- **CAPITAL-NEW-VEHICLE-UX** — Token-first create, empty My Investment until price, hide number spinners, single New Vehicle entry → Capital CHANGELOG
+- **CAPITAL-LIFECYCLE-017** — State vs Activities SSOT: reuse `ac_asset_status`, friendly labels, transitions, timeline interleave, dashboard by state → ADR-017; WORKFLOWS §4 synced
+- **CAPITAL-VIOS-GAP** — Dealership command center (Pending Work first), Notes tab, photos on create, editable repair advances; audit closed remaining OS gaps
+- **CAPITAL-TVI-016** — Frozen Total Vehicle Investment (Option 2): Purchase Price + investment costs; milestones excluded; dealer create UX; edit vehicle/activities; ADR-016 Financial SSOT
+- **CAPITAL-DASHBOARD-EXEC** — Executive restore: grouped Inventory/Active Capital/Profit/Performance; Business Health; activity + Purchases vs Sales; ROI unchanged → ADR-015
+- **CAPITAL-DASHBOARD-OWNER** — Single personal dealership dashboard; six compact KPIs; Profit Growth combo chart; ADR-014
+- **CAPITAL-VEHICLE-UX** — Vehicles naming, partner toggle, blank New Vehicle draft fix, cover on list/hero, profile workspace tabs; ADR-013
+
+## 2026-07-25
+
+- **CAPITAL-VEHICLE-OS** — Vehicle Investment OS: activities timeline SSOT, repair advances, funding=purchase (Me+Partner), Expenses nav removed, inventory tabs; docs ADR-012 + Capital CHANGELOG
+- **CHK-ELEC-AUTOSAVE-01** — Harden checkout electricity autosave: try/catch server action, allocation/V2 recompute guards, inline meter validation + error toast; financial workspace nav defaults to Checkout Settlement; Operations review links → `financial#checkout`; legacy `/admin/checkout-settlements/[id]` redirects to workspace
+- **OPS-APPROVE-0048** — Fix `reservation_status` enum cast in `occupancySync` (Krishna approve POST /admin/operations 500); reorder `approveVacatingRequest` side effects before status flip; repair script + post-approve E2E pass for APG-2026-0048
+- **LEGACY-DEPOSIT-0083** — Production append-only ledger repair (half deposit parity with 0082); estimated refund 205900 paise; script `repair-0083-partial-deposit-ledger.ts`; ops `docs/validation/APG-2026-0083-settlement.md`; prod validator 14/14
+
 ## 2026-07-24
 
+- **BR-MOVEIN-COVERAGE (APG-2026-0082)** — `expandMoveInCheckoutPeriodCoverage` fixes tail double-charge when move-in equals invoice period end and full month rent collected at checkout; Case F regression + prod preview refund ₹2,059; ops `docs/validation/APG-2026-0082-settlement.md`
+- **MOVEIN-COVERAGE-PROD-AUDIT** — `scripts/audit-movein-coverage-production.ts`; 16 risk bookings, 3 refund deltas (0045, 0082, 0083); report `docs/validation/MOVEIN_COVERAGE_PRODUCTION_AUDIT.md`
+- **SETTLEMENT-THREE-AUDIENCES** — `settlementPresentationAudience.ts` (`resident` | `adminReview` | `accountant`); admin approve uses `AdminReviewSettlementScan` (no full statement in modal); resident story refund-first; workspace statement expanded accountant tier; docs `SETTLEMENT_UX_GUIDE.md` rewritten
+- **BILLING-SETTLEMENT-FROZEN-UX** — Engine math frozen (`SETTLEMENT_ENGINE_FREEZE.md`); quick vs accountant UI tiers on settlement statement; resident refund-first story; admin approve scan bar; workspace statement collapsed by default; Cursor rule `settlement-engine-freeze.mdc`
 - **BILLING-SETTLEMENT-FINAL** — Unified `billingEngineValidation.ts`, `settlementRuleRegistry.ts`, 11-line explainability + INV-E4 zero reasons, prod scripts `validate-active-moveout-billing-engine.ts` + policy spot-checks, `alignCoverageToLockedWaterfall` for locked checkout (TAIL_MISMATCH fix), bundle wired to approval/financial/resident; 14/14 prod pass; `BILLING_SETTLEMENT_ENGINE_FINAL_REPORT.md`, `SETTLEMENT_REPAIR_POLICY.md`, UI audit doc
 - **BILLING-PHASE0-VALIDATION** — Added `BILLING_SETTLEMENT_BUSINESS_RULES.md`, `BILLING_ENGINE_INVARIANTS.md`, prod matrix script + `docs/validation/ACTIVE_MOVEOUT_PHASE0_MATRIX.md`, `PHASE0_VERDICT.md` (8/8 active move-outs pass automatable INV-*); cross-links in `BILLING_COVERAGE_MODEL.md`; Phase 1 proposal = unified validator only (no prod failure signatures)
 
@@ -280,5 +307,62 @@ Files:
 - validation/POLICY_SPOTCHECKS.md
 - validation/UI_BILLING_AUDIT.md
 - validation/final-production-validation.json
+
+- 2026-07-25 TASK: payout terminology SSOT — Pending payouts ops label, resident payout copy, lifecycle split
+- 2026-07-25 DECISION: frozen Terminology Rules in CHECKOUT_SETTLEMENT_STATE_MACHINE.md (checkout vs payout)
+- 2026-07-25 DECISION: CHECKOUT_PAYOUT_PLATFORM_FREEZE.md + checkout-payout-platform-freeze Cursor rule
+
+---
+
+<!-- SEMANTIC_2026-07-26T01:12:40Z -->
+---
+Time: 2026-07-26T01:12:40Z
+Type: MIXED
+Impact: HIGH
+Reason: Move-out and checkout documentation is evolving — likely reflecting vacating ops or refund workflow changes.
+Files:
+- ARCHITECTURE.md
+- BILLING_SETTLEMENT_BUSINESS_RULES.md
+- BILLING_SETTLEMENT_ENGINE_FINAL_REPORT.md
+- BUGS.md
+- CHANGELOG.md
+- CHECKOUT_PAYOUT_PLATFORM_FREEZE.md
+- CURRENT_STATE.md
+- DECISIONS.md
+- MEMORY/active_memory.md
+- MEMORY/changelog.md
+- MEMORY/decisions.md
+- MEMORY/tasks.md
+- PROJECT/features.md
+- ROUTES.md
+- SETTLEMENT_ENGINE_FREEZE.md
+- SETTLEMENT_REPAIR_POLICY.md
+- SYSTEM/AI_CONTEXT.md
+- SYSTEM/CHECKOUT_SETTLEMENT_STATE_MACHINE.md
+- SYSTEM/CURRENT_STATE.md
+- SYSTEM/WORKFLOWS.md
+- automotive-capital/ARCHITECTURE.md
+- automotive-capital/CHANGELOG.md
+- automotive-capital/DATABASE.md
+- automotive-capital/DECISIONS.md
+- automotive-capital/FEATURES.md
+- automotive-capital/PROFIT_DISTRIBUTION_SSOT.md
+- automotive-capital/ROUTES.md
+- automotive-capital/WORKFLOWS.md
+- screenshots/resident-move-out/01-pending-approval.png
+- screenshots/resident-move-out/02-approved.png
+- screenshots/resident-move-out/03-request-refund.png
+- screenshots/resident-move-out/04-under-review.png
+- screenshots/resident-move-out/05-refund-completed.png
+- testing/CHECKOUT_COMPLETE_VERIFICATION.md
+- validation/APG-2026-0082-settlement.md
+- validation/APG-2026-0083-settlement.md
+- validation/FINAL_PRODUCTION_VALIDATION.md
+- validation/MOVEIN_COVERAGE_PRODUCTION_AUDIT.md
+- validation/POLICY_SPOTCHECKS.md
+- validation/SETTLEMENT_UX_GUIDE.md
+- validation/UI_BILLING_AUDIT.md
+- validation/final-production-validation.json
+- validation/movein-coverage-production-audit.json
 
 ---
