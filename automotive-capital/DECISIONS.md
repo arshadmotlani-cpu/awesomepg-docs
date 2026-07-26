@@ -457,59 +457,52 @@ Migrations: `0010_profit_distribution_mode.sql`, `0011_sale_time_profit_distribu
 ## ADR-019: Three Ledgers — Vehicle Cost, Seller Payments, Funding Sources
 
 **Date:** 2026-07-26  
-**Status:** Accepted — **Capital architecture SSOT**  
-**Supersedes (partial):** stake-equality as Funding SSOT; Active Capital definition in ADR-015 (label kept, formula replaced)
+**Status:** **Superseded** by ADR-020 (Funding Sources half rejected)  
+**Partial keep:** Vehicle Cost + Seller Payments tables remain.
 
 ### Context
-The product mixed three different money questions in one mental model:
+Originally proposed three product ledgers including a Funding Sources ledger answering “where did cash come from?”
 
-1. **What did the vehicle cost?** → Total Vehicle Investment  
-2. **How much have we paid the seller?** → Remaining purchase balance  
-3. **Where did the cash come from / who owns deployed capital?** → My Capital, Partner Capital, Funding History  
+### Decision (original)
+Three physical ledgers: Vehicle Cost, Seller Payments, Funding Sources (`ac_funding_entries`).
 
-Seller payments (Token / RTGS / Cash / Cheque) lived as `cash_only` rows on `ac_vehicle_activities` next to vehicle costs. Funding was a mutable `ac_asset_investors` **snapshot** forced to equal purchase price — not a ledger of sources. RTGS looked like a “purchase activity” instead of an **instrument** on a seller payment that must answer **funding source** (My Bank, Partner, Loan, sale proceeds from another vehicle).
+### Supersession
+Dealership operating model does **not** track internal money arrangement. ADR-020 removes Funding Sources while keeping seller payments (with instrument) and vehicle costs. Active Capital returns to ADR-015 (Me open stakes).
 
-Generic `ac_ledger_entries` remains an audit trail of mutations; it is **not** the Funding Sources product ledger.
+---
+
+## ADR-020: Dealership OS — No Funding Sources
+
+**Date:** 2026-07-26  
+**Status:** Accepted — **Product philosophy SSOT**  
+**Supersedes:** ADR-019 Funding Sources ledger / Funding History / source pickers  
+**Restores:** ADR-015 Active Capital = Me stakes on open vehicles
+
+### Context
+Funding Sources was technically valid accounting but mismatched how the dealership operates. The owner does not want to manage sources of money, funding history, or “where did this payment come from?” workflows.
 
 ### Decision
 
-**Three physical ledgers — never co-stored as the same row type.**
+**Keep (vehicle economics only):**
+- Purchase Price, Token, Purchase Payments
+- Payment **instrument** (Cash, RTGS, NEFT, Cheque, UPI, Bank) + date + notes
+- Vehicle Costs → TVI (ADR-016)
+- Auto: Purchase Remaining, Gross/My Profit, ROI, Dashboard, Reports
+- Me / Partner **deal stakes** (`ac_asset_investors`) for ROI / funding gap — ownership, not cash-source accounting
 
-| Ledger | Table | Rollup |
-|--------|-------|--------|
-| **Vehicle Cost** | `ac_vehicle_costs` (+ `ac_assets.purchase_price_paise` as purchase base) | **TVI** = Purchase Price + Σ costs − refunds (**ADR-016 frozen**) |
-| **Seller Payments** | `ac_seller_payments` | **Remaining** = Purchase Price − Σ payments |
-| **Funding Sources** | `ac_funding_entries` | **My Capital / Partner Capital / Funding History**; Active Capital = open deploys for party `me` |
+**Remove:**
+- Funding Source selection, Funding History, Funding Ledger (`ac_funding_entries`)
+- Funding navigation / forms / linking / dialogs
+- Any workflow requiring explanation of how money was arranged
 
-**Seller payment row:** `amount`, `paid_at`, **`instrument`** (`cash`|`upi`|`neft`|`rtgs`|`cheque`|`bank`), optional reference — **not** an activity type.  
-**Required:** each seller payment links to one or more **funding `deploy`** entries (`funding_entry_id` / splits).
+**Tables:** Keep `ac_seller_payments` + `ac_vehicle_costs`. Drop `ac_funding_entries` (migration `0013_drop_funding_sources.sql`).
 
-**Funding entry kinds:** `inject` | `deploy` | `release` | `transfer`.  
-**Party:** `me` | `partner` | `lender`.  
-**Source kind:** `bank` | `cash` | `loan` | `partner` | `sale_proceeds` (requires `source_asset_id`).
-
-**Invariants:**
-1. Σ seller payments (active) ≤ purchase price.  
-2. Σ funding deploys attributed to purchase for an asset ≥ Σ seller payments (cash funded).  
-3. Active Capital reconciles to open `deploy` − `release` for party `me` on non-terminal vehicles.  
-4. Cost cash outflows that leave the business also post funding `deploy`s so TVI growth and locked capital stay reconcilable.  
-5. `ac_asset_investors` is a **derived read model** (synced from funding deploys by party) — not a second write SSOT. Direct stake edits must go through funding entries.
-
-**Timeline:** `ac_vehicle_activities` may still project display events; **money SSOTs** are the three ledgers above. Payment milestones must not be the write path for new seller payments.
-
-**ADR-016 / ADR-018 unchanged** for TVI formula and profit distribution.
-
-### Alternatives Considered
-1. Add `payment_mode` to milestone metadata only — fakes a funding ledger; rejected.  
-2. Stretch `ac_ledger_entries` into Funding Sources — wrong product shape; rejected.  
-3. Keep `ac_asset_investors` as editable equality constraint — cannot express proceeds / loan / history; rejected as Funding SSOT.
+**Active Capital:** Σ Me stakes on in-stock vehicles (not funding deploys).
 
 ### Consequences
-- Migration `0012_three_ledgers.sql` + Drizzle schema for the three tables; backfill from activities + investors + capital injects.  
-- Services: record purchase payment writes seller payment **and** funding deploy; costs write `ac_vehicle_costs` (+ deploy when cash leaves).  
-- Dashboard Active Capital / Capital page / My Investment read funding rollups.  
-- UI: payment form = amount + instrument + funding source (incl. proceeds from sold vehicle).  
-- Contributors must not store seller payments or funding sources as investment-cost activities.
+- Payment form = amount + instrument + date + notes only
+- `/capital` redirects to Dashboard; Capital removed from sidebar/hotkeys
+- Contributors must not reintroduce funding-source UX without a new ADR
 
 ---
 

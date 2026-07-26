@@ -6,11 +6,10 @@
 
 ---
 
-## Active
-
 ## 2026-07-26
 
-- [x] **CAPITAL-THREE-LEDGERS-019** — ADR-019 docs + schema `0012` + funding/seller/cost services + payment UI instrument/source + `/capital` Funding History
+- [x] **CAPITAL-NO-FUNDING-SOURCES-020** — Remove Funding Sources ledger/UI; keep payments+costs; Active Capital = stakes
+- [x] **CAPITAL-THREE-LEDGERS-019** — *(superseded for funding by ADR-020)*
 
 ## 2026-07-11
 

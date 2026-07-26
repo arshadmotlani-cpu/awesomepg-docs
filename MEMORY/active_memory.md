@@ -7,11 +7,11 @@
 
 ## Current Focus
 
-- **Automotive Capital three ledgers (ADR-019)** — Vehicle Cost / Seller Payments / Funding Sources are separate SSOTs. Funding Ledger required; Active Capital = open funding deploys. Migration `0012_three_ledgers`. Stop treating RTGS as a purchase activity.
+- **Automotive Capital dealership OS (ADR-020)** — No Funding Sources / Funding History. Keep seller payments with instrument + vehicle costs + TVI/profit/ROI. Active Capital = Me open stakes. Migration `0013`.
 
 - **Automotive Capital Profit Distribution Mode** — Sale-time SELF vs PARTNERSHIP_50_50 (ADR-018). **Frozen** — see PROFIT_DISTRIBUTION_SSOT.md. Migrations `0010`+`0011`. Mode chosen at Record Sale (default SELF); edit on Sale tab.
 
-- **Automotive Capital Purchase Payment UX** — Token + seller payments = progress against Purchase Price (Overview). Activities = external costs only. TVI = Price + costs − refunds (ADR-016 unchanged). Seller payments now on `ac_seller_payments` with instrument + funding source (ADR-019).
+- **Automotive Capital Purchase Payment UX** — Token + seller payments = progress against Purchase Price (Overview). Activities = external costs only. TVI = Price + costs − refunds (ADR-016 unchanged). Payment form: amount + instrument + date + notes only.
 
 - **Automotive Capital product IA (final)** — Sidebar = Dashboard / Vehicles / Reports / Settings only. Operating Console Dashboard: Position → Attention → Pace(3) → Insights → Recent Sales. Payments/Ledger/Documents live on vehicle workspace.
 
@@ -119,14 +119,15 @@ See [[tasks]] for full task log. Current:
 <!-- SEMANTIC_STATE_START -->
 ## Semantic State
 
-> **Last analyzed:** 2026-07-26T02:15:01Z
+> **Last analyzed:** 2026-07-26T02:23:53Z
 
 - **Current system intent:** The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
 - **Dominant change type:** MIXED (see changelog)
-- **System momentum:** MEDIUM (2 vault commits in 24h)
+- **System momentum:** MEDIUM (3 vault commits in 24h)
 - **Risk level:** LOW
 
 <!-- SEMANTIC_STATE_END -->
+
 
 
 

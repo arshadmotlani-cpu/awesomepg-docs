@@ -6,7 +6,7 @@ Automotive Capital is a **host-isolated financial operating system** deployed in
 
 Design principle: **Assets first, cars second.** The domain model is built around generic `assets` with type-specific detail tables. Cars are the first `asset_class`. Property, gold, machinery, business investments, and loans extend the same core without schema redesign.
 
-**Three money ledgers (ADR-019):** Vehicle Cost (`ac_vehicle_costs` + purchase price) → TVI; Seller Payments (`ac_seller_payments`) → remaining to seller; Funding Sources (`ac_funding_entries`) → My/Partner Capital, Active Capital, Funding History. Never co-store these as one row type. Generic `ac_ledger_entries` is mutation audit only — not the Funding Sources product ledger.
+**Dealership economics (ADR-020):** Vehicle Cost (`ac_vehicle_costs` + purchase price) → TVI; Seller Payments (`ac_seller_payments` with instrument) → Remaining. **No Funding Sources ledger** — do not ask where money came from. Active Capital = Me open stakes (ADR-015). Generic `ac_ledger_entries` is mutation audit only.
 
 **Financial SSOT (ADR-016):** Total Vehicle Investment = Purchase Price + investment costs − refunds. Seller payments never enter TVI. Profit = Sale − TVI. See `docs/automotive-capital/DECISIONS.md` ADR-016.
 
@@ -181,21 +181,19 @@ flowchart TB
 
 Enforce via ESLint `no-restricted-imports` rule.
 
-### 4.2 Three product ledgers + audit ledger
+### 4.2 Vehicle economics + audit ledger
 
-**Product SSOTs (ADR-019):**
+**Product SSOTs (ADR-020):**
 
 ```
 Vehicle costs  ──► ac_vehicle_costs     ──► TVI (ADR-016)
-Seller payments ──► ac_seller_payments  ──► Remaining to seller
-Funding sources ──► ac_funding_entries  ──► My/Partner Capital, Active Capital, History
-                         ▲
-                         └── seller payment / cost cash must reference funding deploy
+Seller payments ──► ac_seller_payments  ──► Remaining to seller (instrument = how paid)
+Me/Partner stakes ─► ac_asset_investors ──► Active Capital / My ROI (ownership, not cash sources)
 ```
 
-**Audit trail:** every monetary mutation still posts `ac_ledger_entries` via `LedgerService` (reversals, never deletes). Cached aggregates on `ac_assets` are derived and rebuildable.
+**No Funding Sources ledger.** Do not ask where money came from.
 
-`ac_asset_investors` is a **derived** Me/Partner stake view synced from funding deploys — not an independent write path.
+**Audit trail:** monetary mutations still post `ac_ledger_entries` via `LedgerService` (reversals, never deletes). Cached aggregates on `ac_assets` are derived and rebuildable.
 
 ---
 
