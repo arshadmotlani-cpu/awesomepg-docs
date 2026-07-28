@@ -7,7 +7,7 @@
 
 ## Current Focus
 
-- **For Your Hair ERP (shell)** — Salon ERP on `fyhair.awesomepg.in` (host middleware + `/fyh` rewrites), separate Neon (`HAIR_DATABASE_URL`), Luxury Forest auth/layout/Coming Soon modules. Domain connected on Vercel; next: Neon + seed admin if not set, then build modules one-by-one.
+- **For Your Hair ERP (shell + Customers)** — Salon ERP on `fyhair.awesomepg.in`. Dashboard widgets live (zeros until modules feed data). Customers CRUD shipped (`0002_customers`). Sidebar hides Inventory/Reports. Next: Services → Products → Staff → Appointments → Billing.
 
 - **Automotive Capital audit remediation (shipped locally)** — Money integrity (activity reverse↔cost/seller ledgers), settle without capital-return gate, Reports = Dashboard Active Capital / entitled My Profit, Purchase Pending = seller Remaining SSOT, vehicle IA collapsed to Overview|Work|Sale|Files.
 
@@ -101,38 +101,41 @@ See [[tasks]] for full task log. Current:
 <!-- AGENT_STATUS_START -->
 ## Agent status
 
-> **Last run:** 2026-06-21T20:59:03Z  
-> **Primary type:** BUG  
-> **All types:**  · REFACTOR ·  · BUG ·  · FEATURE ·  · TASK ·  · DECISION ·  · INSIGHT ·   
-> **Files:** 8
+> **Last run:** 2026-07-28T13:51:08Z  
+> **Primary type:** TASK  
+> **All types:**  · REFACTOR ·  · TASK ·   
+> **Files:** 2
 
 <!-- AGENT_STATUS_END -->
 
 
 
 
-<!-- INTELLIGENCE_DELTAS_START -->
-### 2026-06-21T20:59:03Z — review recommended
 
-- **Signal:** BUG change in project state files
+<!-- INTELLIGENCE_DELTAS_START -->
+### 2026-07-28T13:51:08Z — review recommended
+
+- **Signal:** TASK change in project state files
 - **Action:** Verify Current Focus / Blockers / Priorities still accurate
-- **Trigger files:** AI_SYSTEM_PROMPT.md,BUGS.md,Billing.md,CHANGELOG.md,Checkout,Settlements.md,MEMORY/bugs.md,MEMORY/changelog.md,Vacating.md
+- **Trigger files:** MEMORY/active_memory.md,MEMORY/changelog.md
 
 <!-- INTELLIGENCE_DELTAS_END -->
+
 
 
 
 <!-- SEMANTIC_STATE_START -->
 ## Semantic State
 
-> **Last analyzed:** 2026-07-28T08:36:49Z
+> **Last analyzed:** 2026-07-28T13:51:07Z
 
 - **Current system intent:** The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
-- **Dominant change type:** MIXED (see changelog)
-- **System momentum:** LOW (1 vault commits in 24h)
+- **Dominant change type:** REFACTOR
+- **System momentum:** MEDIUM (2 vault commits in 24h)
 - **Risk level:** LOW
 
 <!-- SEMANTIC_STATE_END -->
+
 
 
 

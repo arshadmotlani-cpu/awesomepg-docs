@@ -169,3 +169,14 @@
 ## FEATURE — Capital Additional Income + Dashboard cleanup (2026-07-28)
 - Removed Attention Required block + `pendingWork` fetch from Capital Overview.
 - New `ac_vehicle_additional_income` ledger (brokerage / commissions / incentives); Gross = Sale − TVI + Additional Income; income never enters TVI/Active Capital. Migration `0015`.
+
+<!-- INTEL_2026-07-28T13:51:08Z -->
+### 2026-07-28T13:51:08Z
+
+- **Types:**  · REFACTOR ·  · TASK · 
+- **Primary:** TASK
+- **Summary:** 2 files changed, 2 insertions(+), 1 deletion(-)
+- **Files:**
+- `MEMORY/active_memory.md`
+- `MEMORY/changelog.md`
+

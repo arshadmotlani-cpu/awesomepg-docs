@@ -109,3 +109,14 @@
 - **~₹8k vs ~₹9k pricing:** Shantinagar Room 102 list rent is ₹4,121/mo with 1× month deposit (₹8,242 checkout), not ₹6,000/₹3,000. APG-0036 fixed stay was correctly ₹2,685.
 - **Occupancy date field:** `upper(stay_range)` on monthly bookings is a billing-period bound, not a vacancy date — must not drive public pre-bookable state.
 
+
+<!-- INTEL_2026-07-28T13:51:08Z -->
+### 2026-07-28T13:51:08Z
+
+- **Types:**  · REFACTOR ·  · TASK · 
+- **Primary:** TASK
+- **Summary:** 2 files changed, 2 insertions(+), 1 deletion(-)
+- **Files:**
+- `MEMORY/active_memory.md`
+- `MEMORY/changelog.md`
+
