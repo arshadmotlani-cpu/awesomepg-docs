@@ -7,7 +7,7 @@
 
 ## Current Focus
 
-- **For Your Hair ERP (shell + Customers)** — Salon ERP on `fyhair.awesomepg.in`. Dashboard widgets live (zeros until modules feed data). Customers CRUD shipped (`0002_customers`). Sidebar hides Inventory/Reports. Next: Services → Products → Staff → Appointments → Billing.
+- **For Your Hair ERP (Services + Products)** — Salon ERP on `fyhair.awesomepg.in`. Customers CRM live. Production Services (`0005`: categories, codes, commission, staff assign, consumables schema, online flags, analytics, archive). Products CRUD (`0006`). Minimal Staff for service assignment. Next: Appointments → Billing → Staff Performance.
 
 - **Automotive Capital audit remediation (shipped locally)** — Money integrity (activity reverse↔cost/seller ledgers), settle without capital-return gate, Reports = Dashboard Active Capital / entitled My Profit, Purchase Pending = seller Remaining SSOT, vehicle IA collapsed to Overview|Work|Sale|Files.
 
@@ -101,10 +101,10 @@ See [[tasks]] for full task log. Current:
 <!-- AGENT_STATUS_START -->
 ## Agent status
 
-> **Last run:** 2026-07-28T14:00:33Z  
+> **Last run:** 2026-07-28T18:16:39Z  
 > **Primary type:** TASK  
 > **All types:**  · REFACTOR ·  · TASK ·   
-> **Files:** 1
+> **Files:** 4
 
 <!-- AGENT_STATUS_END -->
 
@@ -113,14 +113,16 @@ See [[tasks]] for full task log. Current:
 
 
 
+
 <!-- INTELLIGENCE_DELTAS_START -->
-### 2026-07-28T13:51:08Z — review recommended
+### 2026-07-28T18:16:39Z — review recommended
 
 - **Signal:** TASK change in project state files
 - **Action:** Verify Current Focus / Blockers / Priorities still accurate
-- **Trigger files:** MEMORY/active_memory.md,MEMORY/changelog.md
+- **Trigger files:** MEMORY/active_memory.md,MEMORY/changelog.md,MEMORY/tasks.md,foryourhair/README.md
 
 <!-- INTELLIGENCE_DELTAS_END -->
+
 
 
 
@@ -128,14 +130,15 @@ See [[tasks]] for full task log. Current:
 <!-- SEMANTIC_STATE_START -->
 ## Semantic State
 
-> **Last analyzed:** 2026-07-28T14:00:33Z
+> **Last analyzed:** 2026-07-28T18:16:39Z
 
 - **Current system intent:** The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
-- **Dominant change type:** REFACTOR
-- **System momentum:** MEDIUM (3 vault commits in 24h)
+- **Dominant change type:** TASK
+- **System momentum:** MEDIUM (4 vault commits in 24h)
 - **Risk level:** LOW
 
 <!-- SEMANTIC_STATE_END -->
+
 
 
 

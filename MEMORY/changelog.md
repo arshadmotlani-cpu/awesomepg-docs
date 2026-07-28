@@ -9,6 +9,7 @@
 
 ## 2026-07-28
 
+- **FYH-SERVICES-PROD** — Production Services + Products: migrations `0005`/`0006`, staff assign, commission, consumables (deduction off), online/analytics fields, archive keeps invoice history; Products CRUD; minimal Staff UI
 - **FYH-CUSTOMER-CRM** — Production CRM customer profile (photo, tabs, loyalty, notes/alerts, timeline, duplicate warn); Services module (`0003`/`0004`)
 - **FYH-DASH-CUSTOMERS** — Real salon dashboard widgets; sidebar hide Inventory/Reports; Customers module (schema `0002`, list/new/detail CRUD)
 - **FYH-HOST-FYHAIR** — Route `fyhair.awesomepg.in` to Salon ERP via existing hair host middleware (keep `foryourhair` alias); safeNext accepts both hosts
@@ -545,5 +546,19 @@ Impact: LOW
 Reason: The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
 Files:
 - MEMORY/changelog.md
+
+---
+
+<!-- SEMANTIC_2026-07-28T18:16:39Z -->
+---
+Time: 2026-07-28T18:16:39Z
+Type: TASK
+Impact: MEDIUM
+Reason: The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
+Files:
+- MEMORY/active_memory.md
+- MEMORY/changelog.md
+- MEMORY/tasks.md
+- foryourhair/README.md
 
 ---
