@@ -7,13 +7,19 @@
 
 ## Current Focus
 
+- **For Your Hair ERP (shell)** — New app on `foryourhair.awesomepg.in`: host middleware + `/fyh` rewrites, separate Neon (`HAIR_DATABASE_URL`), Luxury Forest auth/layout/Coming Soon modules. Next: provision Neon + DNS, then build modules one-by-one.
+
+- **Automotive Capital audit remediation (shipped locally)** — Money integrity (activity reverse↔cost/seller ledgers), settle without capital-return gate, Reports = Dashboard Active Capital / entitled My Profit, Purchase Pending = seller Remaining SSOT, vehicle IA collapsed to Overview|Work|Sale|Files.
+
 - **Automotive Capital dealership OS (ADR-020 + dealer surface)** — UI answers buy / cost / paid seller / remaining / profit only. No Funding Status, Gap, My/Partner Investment, Over/Underfunded. Stakes remain internal for Active Capital + ROI (auto Me = purchase).
 
 - **Automotive Capital Profit Distribution Mode** — Sale-time SELF vs PARTNERSHIP_50_50 (ADR-018). **Frozen** — see PROFIT_DISTRIBUTION_SSOT.md. Migrations `0010`+`0011`. Mode chosen at Record Sale (default SELF); edit on Sale tab.
 
 - **Automotive Capital Purchase Payment UX** — Token + seller payments = progress against Purchase Price (Overview). Activities = external costs only. TVI = Price + costs − refunds (ADR-016 unchanged). Payment form: amount + instrument + date + notes only.
 
-- **Automotive Capital product IA (final)** — Sidebar = Dashboard / Vehicles / Reports / Settings only. Operating Console Dashboard: Position → Attention → Pace(3) → Insights → Recent Sales. Payments/Ledger/Documents live on vehicle workspace.
+- **Automotive Capital product IA (final)** — Sidebar = Dashboard / Vehicles / Reports / Settings only. Operating Console Dashboard: Position → Pace(3) → Insights → Recent Sales (Attention Required removed). Payments/Ledger/Documents live on vehicle workspace.
+
+- **Automotive Capital Additional Income** — Separate ledger on vehicle Overview (`0015`); Gross Profit = Sale − TVI + Additional Income; does not change TVI / Active Capital. Broker **cost** vs Brokerage **income** are distinct.
 
 - **Automotive Capital partnership profit model** — Sufii operating-partner cut (Settings, default 50%) + Investor Pool by stake; funding always = Net Vehicle Cost; sale auto-calcs only. Migration `0008_deal_economics`.
 
@@ -119,14 +125,15 @@ See [[tasks]] for full task log. Current:
 <!-- SEMANTIC_STATE_START -->
 ## Semantic State
 
-> **Last analyzed:** 2026-07-26T08:00:14Z
+> **Last analyzed:** 2026-07-28T07:22:03Z
 
 - **Current system intent:** The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
-- **Dominant change type:** DECISION
-- **System momentum:** MEDIUM (4 vault commits in 24h)
-- **Risk level:** MEDIUM
+- **Dominant change type:** MIXED (see changelog)
+- **System momentum:** LOW (0 vault commits in 24h)
+- **Risk level:** LOW
 
 <!-- SEMANTIC_STATE_END -->
+
 
 
 

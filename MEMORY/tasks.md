@@ -6,8 +6,19 @@
 
 ---
 
+## 2026-07-28
+
+- [x] **COLLECTIONS-P3** — Schema 0130 + lateFeePolicy/reminders/receipts/reports/bulk stubs, cron, tests, docs
+- [x] **COLLECTIONS-P2** — billing_events schema/service, wire emissions, invoice history surfaces, tests, docs
+
+## 2026-07-27
+
+- [ ] **FYH-NEON** — Provision Neon DB + set `HAIR_DATABASE_URL` / `HAIR_ADMIN_*` on Vercel; add DNS `foryourhair.awesomepg.in`
+- [x] **FYH-SHELL-01** — App shell: host routing, auth, layout, theme, placeholder nav (no salon features yet)
+
 ## 2026-07-26
 
+- [x] **CAPITAL-INVESTMENT-TRUTH** — Rewrite financial-truth-report for investment-math SSOT (Active Capital = Σ current investment; no Me-stake filter)
 - [x] **CAPITAL-NO-FUNDING-SOURCES-020** — Remove Funding Sources ledger/UI; keep payments+costs; Active Capital = stakes
 - [x] **CAPITAL-THREE-LEDGERS-019** — *(superseded for funding by ADR-020)*
 
@@ -153,3 +164,7 @@
 
 ## FEATURE — Profit sharing (2026-07-11)
 - Per-deal partner vs investor split on sale + manual profit (percentage or fixed). Dashboard shows Gross Business Profit vs My Lifetime Profit; Business ROI vs My ROI. Charts toggle Business / My.
+
+## FEATURE — Capital Additional Income + Dashboard cleanup (2026-07-28)
+- Removed Attention Required block + `pendingWork` fetch from Capital Overview.
+- New `ac_vehicle_additional_income` ledger (brokerage / commissions / incentives); Gross = Sale − TVI + Additional Income; income never enters TVI/Active Capital. Migration `0015`.
