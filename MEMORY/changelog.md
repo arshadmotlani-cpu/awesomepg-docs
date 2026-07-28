@@ -9,6 +9,7 @@
 
 ## 2026-07-28
 
+- **FYH-CUSTOMER-CRM** — Production CRM customer profile (photo, tabs, loyalty, notes/alerts, timeline, duplicate warn); Services module (`0003`/`0004`)
 - **FYH-DASH-CUSTOMERS** — Real salon dashboard widgets; sidebar hide Inventory/Reports; Customers module (schema `0002`, list/new/detail CRUD)
 - **FYH-HOST-FYHAIR** — Route `fyhair.awesomepg.in` to Salon ERP via existing hair host middleware (keep `foryourhair` alias); safeNext accepts both hosts
 - **CAPITAL-ADDITIONAL-INCOME** — Dashboard Attention Required removed; vehicle Additional Income ledger (`0015`); profit = Sale − TVI + income; reports + unit isolation tests
@@ -532,6 +533,17 @@ Impact: MEDIUM
 Reason: The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
 Files:
 - MEMORY/active_memory.md
+- MEMORY/changelog.md
+
+---
+
+<!-- SEMANTIC_2026-07-28T14:00:33Z -->
+---
+Time: 2026-07-28T14:00:33Z
+Type: UNKNOWN
+Impact: LOW
+Reason: The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
+Files:
 - MEMORY/changelog.md
 
 ---
