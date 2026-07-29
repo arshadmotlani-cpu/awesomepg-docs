@@ -9,6 +9,7 @@
 
 ## 2026-07-29
 
+- **FYH-APPOINTMENTS-BILLING** — Hair ERP visit loop live: appointments (`0007`) + invoices (`0008`) + inventory/commission/loyalty/reports/search; no ComingSoon nav leftovers
 - **PG-PROPERTY-PERFORMANCE-SSOT** — Dropped parallel `getCachedPgBusinessMetrics` / summary from `loadOverviewContext`; Operations/Collections PG pages + Revenue month panels use `revenue.byPg` / `revenue.mtd` only; audits + `propertyPerformanceSsot` tests guard drift
 - **PG-PROPERTY-PERFORMANCE-AUDIT** — Property Performance widget aligned with Revenue SSOT: operating revenue label, late fees column, reconciliation helpers/tests; deposits remain ledger-only (excluded from operating totals)
 
@@ -586,5 +587,25 @@ Files:
 - qa/pricing-summary-proof/mobile-booking-review.png
 - qa/pricing-summary-proof/mobile-checkout-compact.png
 - qa/pricing-summary-proof/mobile-full-page.png
+
+---
+
+<!-- SEMANTIC_2026-07-29T06:00:24Z -->
+---
+Time: 2026-07-29T06:00:24Z
+Type: MIXED
+Impact: HIGH
+Reason: The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
+Files:
+- ARCHITECTURE.md
+- CHANGELOG.md
+- CURRENT_STATE.md
+- MEMORY/changelog.md
+- MEMORY/tasks.md
+- PROJECT/features.md
+- ROUTES.md
+- SYSTEM/CURRENT_STATE.md
+- SYSTEM/WORKFLOWS.md
+- foryourhair/README.md
 
 ---

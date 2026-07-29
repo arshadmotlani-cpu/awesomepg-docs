@@ -8,6 +8,7 @@
 
 ## 2026-07-29
 
+- [x] **FYH-APPOINTMENTS** — Appointment engine + DnD calendar (Day/Week/Timeline/Chair/Stylist), checkout billing, inventory consumption, commission, loyalty/bridal/reports/search
 - [x] **PG-PROPERTY-PERFORMANCE-SSOT** — Unify Property Performance onto financial SSOT: drop overview parallel KPI cache; migrate ops/collections PG pages to `revenue.byPg`; audits + parity tests
 
 ## 2026-07-28
