@@ -63,7 +63,7 @@ npm run hair:db:studio
 | Dashboard | Live KPIs from appointments + invoices + inventory |
 | Customers | Full CRM (`0002`–`0003`) |
 | Appointments | Calendar with Day/Week/Timeline/Chair/Stylist views, @dnd-kit drag/resize, conflict engine (`0007`) |
-| Billing | Visit checkout → invoice → payment split + print (`0008`) |
+| Billing | Appointment checkout + walk-in **Quick Sale** (`/quick-sale`, 9-dot **Express Sale**) + **Advance Payment** wallet top-up (`/advance-payment`) |
 | Services | Production catalog (`0004`–`0005`) |
 | Products | Retail + consumables (`0006`) |
 | Staff | List/create + commission accrual on paid invoices |
@@ -75,3 +75,7 @@ npm run hair:db:studio
 Archive on services/products soft-deactivates only — rows remain for historical invoices; `listBookableServices()` excludes archived.
 
 Visit loop: Booked → Confirmed → Arrived → In Service → Completed → Invoice → Paid (or Cancelled / No Show).
+
+**Navigation:** 9-dot **Quick actions** (top bar, left of search) → Express Sale or Advance Payment only. **+ New** (top bar) → create appointments, customers, catalog records, staff. Quick Sale hold/resume lives inside Express Sale only.
+
+Run Hair tests: **`npm run test:hair`** (same as `node scripts/run-unit-tests.mjs hair`). Requires migrated Hair DB (`npm run hair:db:migrate`); integration uses RC seed fixtures (`npm run hair:db:seed`) and auto-repairs RC-CUT consumable kits on load.

@@ -7,6 +7,11 @@
 
 ---
 
+## 2026-07-30
+
+- **FYH notification template resolution order** — Settings override (`communicationSettings`) → `fyh_notification_templates` row → default seed in `ensureNotificationTemplates`. Never hardcode bodies at call sites; Quick Sale wa.me uses server `getNotificationPreviewAction`. Outbox delivery remains stub (mark sent when WhatsApp enabled + valid recipient).
+- **FYH Quick Sale billing engine foundation (approved)** — Basket SSOT → BasketEngine → PricedBasket → unified Financial Ledger → Invoice → attributions/reports. **BillableItem** unified catalog read model (not CatalogItem). Line pricing: **overridePricePaise only**; discount %/₹ and GST base derived. Staff: **shareBps allocations** (not equal-split-at-persist). **Financial Ledger** replaces separate wallet + receivable mutations; balances materialized from ledger. Invoice lines are **historical snapshots** never live catalog refs for customer display. Phase 0 before POS UX redesign. → `docs/foryourhair/QUICK_SALE_ARCHITECTURE.md`
+
 ## 2026-07-29
 
 - **Property Performance SSOT only** — Overview money (Today/MTD/Property Performance) and Operations/Collections/Revenue PG money tiles consume only `getRevenueCommandCenterData` (`today`/`mtd`/`byPg`). No parallel `getCachedPgBusinessMetrics` on Overview. Engine leaf SQL stays behind `getPgFinancialMetrics`.
@@ -188,6 +193,10 @@
 
 ## DECISION — Settlement engine frozen; UX-only phase (2026-07-24)
 - Billing & Settlement Engine is **feature complete**. Do not change settlement mathematics unless invariant/prod validation fails or a **BR-*** rule changes. Ongoing work: UX tiering (15s resident / 10s admin approve / accountant expandables). Policy: `docs/SETTLEMENT_ENGINE_FREEZE.md`, `docs/validation/SETTLEMENT_UX_GUIDE.md`, Cursor rule `.cursor/rules/settlement-engine-freeze.mdc`.
+
+## 2026-08-01
+
+- **Stability Phase (Awesome PG)** — From 2026-08-01 all features/bug fixes require: dependent-module mapping, baseline tests before edit, post-change `npm run stability:report` (build + scoped unit/integration + billing-settlement when billing paths change), **STOP on unrelated failures**, mandatory regression test per bug fix, SSOT reuse (no duplicated business logic), read-only production verification for billing deploys, regression report before commit/push. → `docs/STABILITY_PHASE.md`, `.cursor/rules/stability-phase.mdc`, `scripts/regression-report.ts`
 
 ## DECISION — Move-in checkout rent coverage vs tail (APG-2026-0082, 2026-07-24)
 - **Problem:** First rent invoice due on move-in day maps to a pre-move-in anniversary window; after `clampPaidPeriodToMoveIn` paid coverage can collapse to a single day while checkout collected **full monthly rent**. V2 **rent consumed** funds the full stay; **tail rent** still charged overlapping days from deposit → double charge (0082: ₹0 refund on ₹2,059 deposit).

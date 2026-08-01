@@ -7,9 +7,32 @@
 
 ---
 
+## 2026-08-01
+
+- **STABILITY-PHASE** — Stability Phase governance: Cursor rule, `docs/STABILITY_PHASE.md`, `npm run stability:report` pre-commit regression gate
+
+## 2026-07-31
+
+- **ELECTRICITY-BILLING-AUDIT** — Published full 9-section audit (`docs/ELECTRICITY_BILLING_AUDIT.md`), UI walkthrough, worked examples scaffold; implemented `RoomElectricityAuditPanel` on admin bill detail for consolidated resident breakdown + sum validation
+
+## 2026-07-30
+
+- **FYH-COMMUNICATIONS-PHASE-G** — Template-driven notifications service (`renderTemplate` settings→DB→seed), outbox processor stub (sent/failed), post-checkout invoice/review enqueue, appointment confirmation via templates, Quick Sale WhatsApp preview action, cron-ready automations, loyalty outbox admin panel, `invoice_ready` kind
+- **FYH-BILLING-FOUNDATION** — Implemented billing engine Phases 0–4: domain/basket, GST-inclusive engine, `0016` financial ledger, checkoutFromBasket, Quick Sale POS redesign, due/advance flows, customer invoice sanitization, Settings Google Review URL
+- **FYH-QUICK-SALE-ARCH** — Approved billing engine foundation doc: Basket SSOT, BillableItem catalog, overridePrice-only pricing, percentage staff allocations, unified Financial Ledger, invoice line snapshots; linked from `QUICK_SALE.md`
+
 ## 2026-07-29
 
+- **FYH-QUICK-ACTIONS-UI** — Global 9-dot launcher (Express Sale + Advance Payment); + New record menu in top bar; `/advance-payment` wallet flow
+- **FYH-QUICK-SALE-STABILIZE** — Hold bill (`0014` pos_draft), attribution math SSOT (`attributionMath.ts`), reports attribution-driven, commission rules schema future-ready, `npm run test:hair`, migration guard for integration tests, Vitest removed from 2 Capital unit tests, gitignore Playwright artifacts
+- **FYH-SALES-SSOT** — Line attributions (0013), staff performance + Reports tree, Quick Sale serviced-by/sold-by; commission scaffold; super_admin for commission payout
+- **FYH-QUICK-SALE** — Walk-in Quick Sale POS (`/quick-sale`): customer codes, 1-char search, minimal add-customer, catalog tabs, cart, split pay + tip/round-off; invoice engine `quick_sale` source (no stock on pay; membership/package sell on pay)
+- **PROD-READINESS-AUDIT** — Vault audit doc + MV sign-off template; `isBedAvailable` occupancy SSOT gate; moveOut workflow test aligned to payout copy; UAT scorecard refresh
+- **REPO-STABILIZATION-W0-W4** — Platform: Hair E2E workflow + `ENV_CONTRACT.md` + `env:check --product=`; Hair P0 reports TZ, mobile billing/customers, syncStaff preserve; P1 staff schedules, resources CRUD, reports GST/top services/staff, billing copy; PG P0 runbook + occupancy phase0 status + parity tests; Capital sign-off doc + README/TASKS sync; dashboard `loading.tsx`
+- **FYH-UAT-P1** — UAT Phase 1: consumable deductInventory preserve + dashboard staff-on-schedule KPI; tests added
+- **FYH-RC-READY** — Hair ERP RC verification complete: integration 14/14, Playwright hair 20/20; `RELEASE_READINESS.md` verdict Production Ready; fixed `/loyalty` host prefix, consumable seed alignment, auth E2E harness
 - **FYH-APPOINTMENTS-BILLING** — Hair ERP visit loop live: appointments (`0007`) + invoices (`0008`) + inventory/commission/loyalty/reports/search; no ComingSoon nav leftovers
+- **APG-OS-CONCEPT-02-LIVE** — Approved Sentinel Shield; admin shell + auth + manifest wired; shield SVG geometry; customer/Capital/FY unchanged
 - **PG-PROPERTY-PERFORMANCE-SSOT** — Dropped parallel `getCachedPgBusinessMetrics` / summary from `loadOverviewContext`; Operations/Collections PG pages + Revenue month panels use `revenue.byPg` / `revenue.mtd` only; audits + `propertyPerformanceSsot` tests guard drift
 - **PG-PROPERTY-PERFORMANCE-AUDIT** — Property Performance widget aligned with Revenue SSOT: operating revenue label, late fees column, reconciliation helpers/tests; deposits remain ledger-only (excluded from operating totals)
 
@@ -607,5 +630,348 @@ Files:
 - SYSTEM/CURRENT_STATE.md
 - SYSTEM/WORKFLOWS.md
 - foryourhair/README.md
+
+---
+- 2026-07-29 — FEATURE: Final branding sprint — docs/BRANDING/, /brand/* previews, product SVG systems, metadata/manifests.
+
+<!-- SEMANTIC_2026-08-01T10:14:46Z -->
+---
+Time: 2026-08-01T10:14:46Z
+Type: MIXED
+Impact: HIGH
+Reason: The AI memory / intelligence automation layer is being extended — cognition pipeline or MEMORY structure changed.
+Files:
+- ARCHITECTURE.md
+- BRANDING/README.md
+- BRANDING/apg-os.md
+- BRANDING/assets-manifest.md
+- BRANDING/awesome-pg.md
+- BRANDING/capital-os.md
+- BRANDING/for-your-hair.md
+- BRANDING/shared.md
+- CHANGELOG.md
+- CURRENT_STATE.md
+- DATABASE.md
+- DECISIONS.md
+- ELECTRICITY_BILLING_AUDIT.md
+- ELECTRICITY_BILLING_AUDIT_SAMPLES.md
+- ELECTRICITY_BILLING_UI_WALKTHROUGH.md
+- ENV_CONTRACT.md
+- Electricity.md
+- MEMORY/active_memory.md
+- MEMORY/changelog.md
+- MEMORY/decisions.md
+- MEMORY/tasks.md
+- PRODUCTION_READINESS_AUDIT.md
+- PRODUCTION_STABILIZATION/OCCUPANCY_PHASE0_STATUS.md
+- PRODUCTION_STABILIZATION/PG_P0_VERIFICATION_RUNBOOK.md
+- PRODUCTION_STABILIZATION/PRODUCTION_READINESS_SIGNOFF.md
+- PROJECT/features.md
+- ROUTES.md
+- STABILITY_PHASE.md
+- SYSTEM/CURRENT_STATE.md
+- SYSTEM/WORKFLOWS.md
+- automotive-capital/PRODUCTION_SIGNOFF.md
+- automotive-capital/README.md
+- automotive-capital/TASKS.md
+- foryourhair/FEATURES.md
+- foryourhair/HISTORICAL_IMPORT.md
+- foryourhair/IMPLEMENTATION_REPORT.md
+- foryourhair/QUICK_SALE.md
+- foryourhair/QUICK_SALE_ARCHITECTURE.md
+- foryourhair/README.md
+- foryourhair/RELEASE_READINESS.md
+- foryourhair/UAT_AUDIT.md
+- foryourhair/WORKFLOWS.md
+- foryourhair/imports/historical-sales-sample.xlsx
+- foryourhair/imports/historical-sales-template.csv
+- foryourhair/imports/historical-sales-template.xlsx
+- foryourhair/imports/output/April Invoice Register.xlsx
+- foryourhair/imports/output/Combined Invoice Register.xlsx
+- foryourhair/imports/output/June Invoice Register.xlsx
+- foryourhair/imports/output/May Invoice Register.xlsx
+- foryourhair/imports/output/pdfs/FYH-00681.html
+- foryourhair/imports/output/pdfs/FYH-00682.html
+- foryourhair/imports/output/pdfs/FYH-00683.html
+- foryourhair/imports/output/pdfs/FYH-00684.html
+- foryourhair/imports/output/pdfs/FYH-00685.html
+- foryourhair/imports/output/pdfs/FYH-00686.html
+- foryourhair/imports/output/pdfs/FYH-00687.html
+- foryourhair/imports/output/pdfs/FYH-00688.html
+- foryourhair/imports/output/pdfs/FYH-00689.html
+- foryourhair/imports/output/pdfs/FYH-00690.html
+- foryourhair/imports/output/pdfs/FYH-00691.html
+- foryourhair/imports/output/pdfs/FYH-00692.html
+- foryourhair/imports/output/pdfs/FYH-00693.html
+- foryourhair/imports/output/pdfs/FYH-00694.html
+- foryourhair/imports/output/pdfs/FYH-00695.html
+- foryourhair/imports/output/pdfs/FYH-00696.html
+- foryourhair/imports/output/pdfs/FYH-00697.html
+- foryourhair/imports/output/pdfs/FYH-00698.html
+- foryourhair/imports/output/pdfs/FYH-00699.html
+- foryourhair/imports/output/pdfs/FYH-00700.html
+- foryourhair/imports/output/pdfs/FYH-00701.html
+- foryourhair/imports/output/pdfs/FYH-00702.html
+- foryourhair/imports/output/pdfs/FYH-00703.html
+- foryourhair/imports/output/pdfs/FYH-00704.html
+- foryourhair/imports/output/pdfs/FYH-00705.html
+- foryourhair/imports/output/pdfs/FYH-00706.html
+- foryourhair/imports/output/pdfs/FYH-00707.html
+- foryourhair/imports/output/pdfs/FYH-00708.html
+- foryourhair/imports/output/pdfs/FYH-00709.html
+- foryourhair/imports/output/pdfs/FYH-00710.html
+- foryourhair/imports/output/pdfs/FYH-00711.html
+- foryourhair/imports/output/pdfs/FYH-00712.html
+- foryourhair/imports/output/pdfs/FYH-00713.html
+- foryourhair/imports/output/pdfs/FYH-00714.html
+- foryourhair/imports/output/pdfs/FYH-00715.html
+- foryourhair/imports/output/pdfs/FYH-00716.html
+- foryourhair/imports/output/pdfs/FYH-00717.html
+- foryourhair/imports/output/pdfs/FYH-00718.html
+- foryourhair/imports/output/pdfs/FYH-00719.html
+- foryourhair/imports/output/pdfs/FYH-00720.html
+- foryourhair/imports/output/pdfs/FYH-00721.html
+- foryourhair/imports/output/pdfs/FYH-00722.html
+- foryourhair/imports/output/pdfs/FYH-00723.html
+- foryourhair/imports/output/pdfs/FYH-00724.html
+- foryourhair/imports/output/pdfs/FYH-00725.html
+- foryourhair/imports/output/pdfs/FYH-00726.html
+- foryourhair/imports/output/pdfs/FYH-00727.html
+- foryourhair/imports/output/pdfs/FYH-00728.html
+- foryourhair/imports/output/pdfs/FYH-00729.html
+- foryourhair/imports/output/pdfs/FYH-00730.html
+- foryourhair/imports/output/pdfs/FYH-00731.html
+- foryourhair/imports/output/pdfs/FYH-00732.html
+- foryourhair/imports/output/pdfs/FYH-00733.html
+- foryourhair/imports/output/pdfs/FYH-00734.html
+- foryourhair/imports/output/pdfs/FYH-00735.html
+- foryourhair/imports/output/pdfs/FYH-00736.html
+- foryourhair/imports/output/pdfs/FYH-00737.html
+- foryourhair/imports/output/pdfs/FYH-00738.html
+- foryourhair/imports/output/pdfs/FYH-00739.html
+- foryourhair/imports/output/pdfs/FYH-00740.html
+- foryourhair/imports/output/pdfs/FYH-00741.html
+- foryourhair/imports/output/pdfs/FYH-00742.html
+- foryourhair/imports/output/pdfs/FYH-00743.html
+- foryourhair/imports/output/pdfs/FYH-00744.html
+- foryourhair/imports/output/pdfs/FYH-00745.html
+- foryourhair/imports/output/pdfs/FYH-00746.html
+- foryourhair/imports/output/pdfs/FYH-00747.html
+- foryourhair/imports/output/pdfs/FYH-00748.html
+- foryourhair/imports/output/pdfs/FYH-00749.html
+- foryourhair/imports/output/pdfs/FYH-00750.html
+- foryourhair/imports/output/pdfs/FYH-00751.html
+- foryourhair/imports/output/pdfs/FYH-00752.html
+- foryourhair/imports/output/pdfs/FYH-00753.html
+- foryourhair/imports/output/pdfs/FYH-00754.html
+- foryourhair/imports/output/pdfs/FYH-00755.html
+- foryourhair/imports/output/pdfs/FYH-00756.html
+- foryourhair/imports/output/pdfs/FYH-00757.html
+- foryourhair/imports/output/pdfs/FYH-00758.html
+- foryourhair/imports/output/pdfs/FYH-00759.html
+- foryourhair/imports/output/pdfs/FYH-00760.html
+- foryourhair/imports/output/pdfs/FYH-00761.html
+- foryourhair/imports/output/pdfs/FYH-00762.html
+- foryourhair/imports/output/pdfs/FYH-00763.html
+- foryourhair/imports/output/pdfs/FYH-00764.html
+- foryourhair/imports/output/pdfs/FYH-00765.html
+- foryourhair/imports/output/pdfs/FYH-00766.html
+- foryourhair/imports/output/pdfs/FYH-00767.html
+- foryourhair/imports/output/pdfs/FYH-00768.html
+- foryourhair/imports/output/pdfs/FYH-00769.html
+- foryourhair/imports/output/pdfs/FYH-00770.html
+- foryourhair/imports/output/pdfs/FYH-00771.html
+- foryourhair/imports/output/pdfs/FYH-00772.html
+- foryourhair/imports/output/pdfs/FYH-00773.html
+- foryourhair/imports/output/pdfs/FYH-00774.html
+- foryourhair/imports/output/pdfs/FYH-00775.html
+- foryourhair/imports/output/pdfs/FYH-00776.html
+- foryourhair/imports/output/pdfs/FYH-00777.html
+- foryourhair/imports/output/pdfs/FYH-00778.html
+- foryourhair/imports/output/pdfs/FYH-00779.html
+- foryourhair/imports/output/pdfs/FYH-00780.html
+- foryourhair/imports/output/pdfs/FYH-00781.html
+- foryourhair/imports/output/pdfs/FYH-00782.html
+- foryourhair/imports/output/pdfs/FYH-00783.html
+- foryourhair/imports/output/pdfs/FYH-00784.html
+- foryourhair/imports/output/pdfs/FYH-00785.html
+- foryourhair/imports/output/pdfs/FYH-00786.html
+- foryourhair/imports/output/pdfs/FYH-00787.html
+- foryourhair/imports/output/pdfs/FYH-00788.html
+- foryourhair/imports/output/pdfs/FYH-00789.html
+- foryourhair/imports/output/pdfs/FYH-00790.html
+- foryourhair/imports/output/pdfs/FYH-00791.html
+- foryourhair/imports/output/pdfs/FYH-00792.html
+- foryourhair/imports/output/pdfs/FYH-00793.html
+- foryourhair/imports/output/pdfs/FYH-00794.html
+- foryourhair/imports/output/pdfs/FYH-00795.html
+- foryourhair/imports/output/pdfs/FYH-00796.html
+- foryourhair/imports/output/pdfs/FYH-00797.html
+- foryourhair/imports/output/pdfs/FYH-00798.html
+- foryourhair/imports/output/pdfs/FYH-00799.html
+- foryourhair/imports/output/pdfs/FYH-00800.html
+- foryourhair/imports/output/pdfs/FYH-00801.html
+- foryourhair/imports/output/pdfs/FYH-00802.html
+- foryourhair/imports/output/pdfs/FYH-00803.html
+- foryourhair/imports/output/pdfs/FYH-00804.html
+- foryourhair/imports/output/pdfs/FYH-00805.html
+- foryourhair/imports/output/pdfs/FYH-00806.html
+- foryourhair/imports/output/pdfs/FYH-00807.html
+- foryourhair/imports/output/pdfs/FYH-00808.html
+- foryourhair/imports/output/pdfs/FYH-00809.html
+- foryourhair/imports/output/pdfs/FYH-00810.html
+- foryourhair/imports/output/pdfs/FYH-00811.html
+- foryourhair/imports/output/pdfs/FYH-00812.html
+- foryourhair/imports/output/pdfs/FYH-00813.html
+- foryourhair/imports/output/pdfs/FYH-00814.html
+- foryourhair/imports/output/pdfs/FYH-00815.html
+- foryourhair/imports/output/pdfs/FYH-00816.html
+- foryourhair/imports/output/pdfs/FYH-00817.html
+- foryourhair/imports/output/pdfs/FYH-00818.html
+- foryourhair/imports/output/pdfs/FYH-00819.html
+- foryourhair/imports/output/pdfs/FYH-00820.html
+- foryourhair/imports/output/pdfs/FYH-00821.html
+- foryourhair/imports/output/pdfs/FYH-00822.html
+- foryourhair/imports/output/pdfs/FYH-00823.html
+- foryourhair/imports/output/pdfs/FYH-00824.html
+- foryourhair/imports/output/pdfs/FYH-00825.html
+- foryourhair/imports/output/pdfs/FYH-00826.html
+- foryourhair/imports/output/pdfs/FYH-00827.html
+- foryourhair/imports/output/pdfs/FYH-00828.html
+- foryourhair/imports/output/pdfs/FYH-00829.html
+- foryourhair/imports/output/pdfs/FYH-00830.html
+- foryourhair/imports/output/pdfs/FYH-00831.html
+- foryourhair/imports/output/pdfs/FYH-00832.html
+- foryourhair/imports/output/pdfs/FYH-00833.html
+- foryourhair/imports/output/pdfs/FYH-00834.html
+- foryourhair/imports/output/pdfs/FYH-00835.html
+- foryourhair/imports/output/pdfs/FYH-00836.html
+- foryourhair/imports/output/pdfs/FYH-00837.html
+- foryourhair/imports/output/pdfs/FYH-00838.html
+- foryourhair/imports/output/pdfs/FYH-00839.html
+- foryourhair/imports/output/pdfs/FYH-00840.html
+- foryourhair/imports/output/pdfs/FYH-00841.html
+- foryourhair/imports/output/pdfs/FYH-00842.html
+- foryourhair/imports/output/pdfs/FYH-00843.html
+- foryourhair/imports/output/pdfs/FYH-00844.html
+- foryourhair/imports/output/pdfs/FYH-00845.html
+- foryourhair/imports/output/pdfs/FYH-00846.html
+- foryourhair/imports/output/pdfs/FYH-00847.html
+- foryourhair/imports/output/pdfs/FYH-00848.html
+- foryourhair/imports/output/pdfs/FYH-00849.html
+- foryourhair/imports/output/pdfs/FYH-00850.html
+- foryourhair/imports/output/pdfs/FYH-00851.html
+- foryourhair/imports/output/pdfs/FYH-00852.html
+- foryourhair/imports/output/pdfs/FYH-00853.html
+- foryourhair/imports/output/pdfs/FYH-00854.html
+- foryourhair/imports/output/pdfs/FYH-00855.html
+- foryourhair/imports/output/pdfs/FYH-00856.html
+- foryourhair/imports/output/pdfs/FYH-00857.html
+- foryourhair/imports/output/pdfs/FYH-00858.html
+- foryourhair/imports/output/pdfs/FYH-00859.html
+- foryourhair/imports/output/pdfs/FYH-00860.html
+- foryourhair/imports/output/pdfs/FYH-00861.html
+- foryourhair/imports/output/pdfs/FYH-00862.html
+- foryourhair/imports/output/pdfs/FYH-00863.html
+- foryourhair/imports/output/pdfs/FYH-00864.html
+- foryourhair/imports/output/pdfs/FYH-00865.html
+- foryourhair/imports/output/pdfs/FYH-00866.html
+- foryourhair/imports/output/pdfs/FYH-00867.html
+- foryourhair/imports/output/pdfs/FYH-00868.html
+- foryourhair/imports/output/pdfs/FYH-00869.html
+- foryourhair/imports/output/pdfs/FYH-00870.html
+- foryourhair/imports/output/pdfs/FYH-00871.html
+- foryourhair/imports/output/pdfs/FYH-00872.html
+- foryourhair/imports/output/pdfs/FYH-00873.html
+- foryourhair/imports/output/pdfs/FYH-00874.html
+- foryourhair/imports/output/pdfs/FYH-00875.html
+- foryourhair/imports/output/pdfs/FYH-00876.html
+- foryourhair/imports/output/pdfs/FYH-00877.html
+- foryourhair/imports/output/pdfs/FYH-00878.html
+- foryourhair/imports/output/pdfs/FYH-00879.html
+- foryourhair/imports/output/pdfs/FYH-00880.html
+- foryourhair/imports/output/pdfs/FYH-00881.html
+- foryourhair/imports/output/pdfs/FYH-00882.html
+- foryourhair/imports/output/pdfs/FYH-00883.html
+- foryourhair/imports/output/pdfs/FYH-00884.html
+- foryourhair/imports/output/pdfs/FYH-00885.html
+- foryourhair/imports/output/pdfs/FYH-00886.html
+- foryourhair/imports/output/pdfs/FYH-00887.html
+- foryourhair/imports/output/pdfs/FYH-00888.html
+- foryourhair/imports/output/pdfs/FYH-00889.html
+- foryourhair/imports/output/pdfs/FYH-00890.html
+- foryourhair/imports/output/pdfs/FYH-00891.html
+- foryourhair/imports/output/pdfs/FYH-00892.html
+- foryourhair/imports/output/pdfs/FYH-00893.html
+- foryourhair/imports/output/pdfs/FYH-00894.html
+- foryourhair/imports/output/pdfs/FYH-00895.html
+- foryourhair/imports/output/pdfs/FYH-00896.html
+- foryourhair/imports/output/pdfs/FYH-00897.html
+- foryourhair/imports/output/pdfs/FYH-00898.html
+- foryourhair/imports/output/pdfs/FYH-00899.html
+- foryourhair/imports/output/pdfs/FYH-00900.html
+- foryourhair/imports/output/pdfs/FYH-00901.html
+- foryourhair/imports/output/pdfs/FYH-00902.html
+- foryourhair/imports/output/pdfs/FYH-00903.html
+- foryourhair/imports/output/pdfs/FYH-00904.html
+- foryourhair/imports/output/pdfs/FYH-00905.html
+- foryourhair/imports/output/pdfs/FYH-00906.html
+- foryourhair/imports/output/pdfs/FYH-00907.html
+- foryourhair/imports/output/pdfs/FYH-00908.html
+- foryourhair/imports/output/pdfs/FYH-00909.html
+- foryourhair/imports/output/pdfs/FYH-00910.html
+- foryourhair/imports/output/pdfs/FYH-00911.html
+- foryourhair/imports/output/pdfs/FYH-00912.html
+- foryourhair/imports/output/pdfs/FYH-00913.html
+- foryourhair/imports/output/pdfs/FYH-00914.html
+- foryourhair/imports/output/pdfs/FYH-00915.html
+- foryourhair/imports/output/pdfs/FYH-00916.html
+- foryourhair/imports/output/pdfs/FYH-00917.html
+- foryourhair/imports/output/pdfs/FYH-00918.html
+- foryourhair/imports/output/pdfs/FYH-00919.html
+- foryourhair/imports/output/pdfs/FYH-00920.html
+- foryourhair/imports/output/pdfs/FYH-00921.html
+- foryourhair/imports/output/pdfs/FYH-00922.html
+- foryourhair/imports/output/pdfs/FYH-00923.html
+- foryourhair/imports/output/pdfs/FYH-00924.html
+- foryourhair/imports/output/pdfs/FYH-00925.html
+- foryourhair/imports/output/pdfs/FYH-00926.html
+- foryourhair/imports/output/pdfs/FYH-00927.html
+- foryourhair/imports/output/pdfs/FYH-00928.html
+- foryourhair/imports/output/pdfs/FYH-00929.html
+- foryourhair/imports/output/pdfs/FYH-00930.html
+- foryourhair/imports/output/pdfs/FYH-00931.html
+- foryourhair/imports/output/pdfs/FYH-00932.html
+- foryourhair/imports/output/pdfs/FYH-00933.html
+- foryourhair/imports/output/pdfs/FYH-00934.html
+- foryourhair/imports/output/pdfs/FYH-00935.html
+- foryourhair/imports/output/pdfs/FYH-00936.html
+- foryourhair/imports/output/pdfs/FYH-00937.html
+- foryourhair/imports/output/pdfs/FYH-00938.html
+- foryourhair/imports/output/pdfs/FYH-00939.html
+- foryourhair/imports/output/pdfs/FYH-00940.html
+- foryourhair/imports/output/pdfs/FYH-00941.html
+- foryourhair/imports/output/pdfs/FYH-00942.html
+- foryourhair/imports/output/pdfs/FYH-00943.html
+- foryourhair/imports/output/pdfs/FYH-00944.html
+- foryourhair/imports/output/pdfs/FYH-00945.html
+- foryourhair/imports/output/pdfs/FYH-00946.html
+- foryourhair/imports/output/pdfs/FYH-00947.html
+- foryourhair/imports/output/pdfs/FYH-00948.html
+- foryourhair/imports/output/pdfs/FYH-00949.html
+- foryourhair/imports/output/pdfs/FYH-00950.html
+- foryourhair/imports/output/pdfs/FYH-00951.html
+- foryourhair/imports/output/pdfs/FYH-00952.html
+- foryourhair/imports/output/pdfs/FYH-00953.html
+- foryourhair/imports/output/pdfs/FYH-00954.html
+- qa/APG_OS_BRAND.md
+- qa/apg-os-concepts/README.md
+- qa/apg-os-concepts/apg-os-concept-01-hex-control.png
+- qa/apg-os-concepts/apg-os-concept-02-sentinel-shield.png
+- qa/apg-os-concepts/apg-os-concept-03-command-grid.png
+- qa/apg-os-concepts/apg-os-concept-04-monogram-ao.png
+- qa/apg-os-concepts/apg-os-concept-05-enterprise-os.png
+- qa/apg-os-concepts/apg-os-concept-06-ultra-minimal.png
+- qa/hair-rc/README.md
 
 ---
